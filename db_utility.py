@@ -1,0 +1,116 @@
+import sqlite3 as sl
+from datetime import datetime
+
+connection = sl.connect("TimeBlocks.db")
+cursor = connection.cursor()
+
+
+def delete_db():
+    cursor.execute("DROP TABLE IF EXISTS ToDoTasks")
+    cursor.execute("DROP TABLE IF EXISTS RecurrentTasks")
+    cursor.execute("DROP TABLE IF EXISTS PlanerTasks")
+    cursor.execute("DROP TABLE IF EXISTS RecurrentTaskEntries")
+    cursor.execute("DROP TABLE IF EXISTS EventTasks")
+    pass
+
+
+def create_db():
+    # delete_db()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS ToDoTasks (
+    task_reference integer PRIMARY KEY,
+    task_type integer NOT NULL,
+    date_timestamp integer NOT NULL,
+    active integer NOT NULL,
+    done integer DEFAULT '0' NOT NULL,
+    text text NOT NULL,
+    top real NOT NULL,
+    duration integer DEFAULT "1" NOT NULL
+    )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS RecurrentTasks (
+        task_reference integer PRIMARY KEY,
+        task_type integer NOT NULL,
+        date_timestamp integer NOT NULL,
+        active integer NOT NULL,
+        done integer DEFAULT '0' NOT NULL,
+        text text NOT NULL,
+        top real NOT NULL,
+        duration integer DEFAULT "1" NOT NULL,
+        period integer NOT NULL,
+        unit_str text NOT NULL,
+        color text NOT NULL,
+        font_color text NOT NULL
+        )
+        """)
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS RecurrentTaskEntries (
+            entry_reference integer PRIMARY KEY,
+            date_timestamp integer NOT NULL,
+            unit_str text NOT NULL,
+            task_reference integer NOT NULL,
+            FOREIGN KEY (task_reference)
+                REFERENCES RecurrentTasks (task_reference)
+            )
+            """)
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS EventTasks (
+            task_reference integer PRIMARY KEY,
+            task_type integer NOT NULL,
+            date_timestamp integer NOT NULL,
+            done integer DEFAULT '0' NOT NULL,
+            text text NOT NULL,
+            top real NOT NULL,
+            duration integer DEFAULT "1" NOT NULL,
+            color text NOT NULL,
+            font_color text NOT NULL
+            )
+    """)
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS PlanerTasks (
+            task_reference integer PRIMARY KEY,
+            task_type integer NOT NULL,
+            task_id integer NOT NULL,
+            planed_date_timestamp integer NOT NULL
+            )
+            """)
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS Goals (
+            goal_reference integer PRIMARY KEY,
+            goal_type integer NOT NULL,
+            goal integer NOT NULL,
+            progress integer NOT NULL,
+            goal_name text NOT NULL
+            )
+            """)
+    cursor.execute("""
+            CREATE TABLE IF NOT EXISTS GoalEntries (
+            entry_reference integer PRIMARY KEY,
+            date integer NOT NULL,
+            progress integer NOT NULL,
+            reset integer NOT NULL,
+            goal_type integer NOT NULL,
+            goal_reference integer NOT NULL,
+            FOREIGN KEY (goal_reference)
+                REFERENCES Goals (goal_reference),
+            FOREIGN KEY (goal_type)
+                REFERENCES Goals (goal_type)
+            )
+            """)
+    connection.commit()
+
+
+def save_task(task_type, creation_date, active, done, text, top, duration):
+    date_timestamp = datetime.timestamp(creation_date)
+    cursor.execute(
+        f"INSERT INTO ToDoTasks VALUES(NULL, '{task_type}', '{date_timestamp}',"
+        f" '{active}','{done}', '{text}', '{top}', '{duration}')")
+    connection.commit()
+
+
+def get_list_tasks():
+    cursor.execute("SELECT * FROM ToDoTasks WHERE active = '0' AND done = '0'")
+    tasks = cursor.fetchall()
+    return tasks
+
