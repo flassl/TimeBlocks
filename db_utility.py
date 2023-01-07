@@ -1,5 +1,5 @@
 import sqlite3 as sl
-from datetime import datetime
+from datetime import datetime, date, time
 
 connection = sl.connect("TimeBlocks.db")
 cursor = connection.cursor()
@@ -106,6 +106,77 @@ def save_task(task_type, creation_date, active, done, text, top, duration):
     cursor.execute(
         f"INSERT INTO ToDoTasks VALUES(NULL, '{task_type}', '{date_timestamp}',"
         f" '{active}','{done}', '{text}', '{top}', '{duration}')")
+    connection.commit()
+
+
+def update_task(ID, date_update, text, top, duration):
+    if isinstance(date_update, date):
+        date_update = datetime.combine(date_update, time(0, 0))
+    date_update_timestamp = date_update.timestamp()
+    cursor.execute(
+        f"UPDATE ToDoTasks "
+        f"SET "
+        f"text = '{text}', "
+        f"top = '{top}', "
+        f"date_timestamp = '{date_update_timestamp}', "
+        f"duration = '{duration}' "
+        f"WHERE "
+        f"task_reference = '{ID}'")
+    connection.commit()
+
+
+def de_activate_to_do(ID, active, done, new_top):
+    cursor.execute(
+        f"UPDATE ToDoTasks "
+        f"SET "
+        f"active = '{active}', "
+        f"done = '{done}', "
+        f"top = '{new_top}' "
+        f"WHERE "
+        f"task_reference = '{ID}'")
+    connection.commit()
+
+
+def remove_task(ID):
+    cursor.execute(
+        f"DELETE FROM ToDoTasks "
+        f"WHERE task_reference = '{ID}'")
+    connection.commit()
+
+
+def save_planer(task_type, task_id, planed_date):
+    # if isinstance(planed_date, int) or isinstance(planed_date, float):
+        # planed_date = datetime.fromtimestamp(planed_date)
+    if isinstance(planed_date, date):
+        planed_date = datetime.combine(planed_date, time(0, 0)).timestamp()
+    if isinstance(planed_date, datetime):
+        planed_date = planed_date.timestamp()
+    cursor.execute(
+        f"SELECT * FROM PlanerTasks WHERE task_reference = '{task_id}'")
+    connection.commit()
+    planer_entry = cursor.fetchall()
+    if len(planer_entry) > 0:
+        cursor.execute(
+            f"UPDATE PlanerTasks "
+            f"SET "
+            f"task_type = '{task_type}', "
+            f"planed_date_timestamp = '{planed_date}' "
+            f"WHERE "
+            f"task_reference = '{task_id}'")
+        connection.commit()
+    else:
+
+        cursor.execute(
+            f"INSERT INTO PlanerTasks VALUES(NULL, '{task_type}', '{task_id}', '{planed_date}')")
+        connection.commit()
+
+
+def remove_planer(ID, task_type):
+    cursor.execute(
+        f"DELETE FROM PlanerTasks "
+        f"WHERE "
+        f"task_id = '{ID}' AND "
+        f"task_type = '{task_type}'")
     connection.commit()
 
 

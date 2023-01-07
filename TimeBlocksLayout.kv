@@ -3,9 +3,17 @@ TimeBlocks:
 <TimeBlocks>
     MDNavigationLayout:
         ScreenManager:
+            id: screen_manager
             MDScreen:
+                id: planer_display_screen
+                name: "planer_display"
                 PlanerDisplay:
                     id: planer_display
+            MDScreen:
+                id: calendar_screen
+                name: "calendar"
+                CalendarDisplay:
+                    id: calendar_display
 
         MDNavigationDrawer:
             id: navigation_drawer
@@ -41,12 +49,9 @@ TimeBlocks:
                     orientation: 'vertical'
                     id: time_display
                     size_hint: (0.15, None)
-                    canvas.before:
-                        Color:
-                            rgba: app.theme_cls.primary_light
-                        Line:
-                            width: 1
-                            rectangle: (self.x, self.y, self.width, self.height)
+                    md_bg_color: app.theme_cls.bg_dark
+                    radius: 0, 20, 20, 0
+
                 MDFloatLayout:
                     id: planer_float_layout
                     size_hint: (1, None)
@@ -70,6 +75,7 @@ TimeBlocks:
     MDIconButton:
         icon: "calendar"
         pos_hint: {"center_x": .92, "center_y": .6}
+        on_release: self.parent.show_calendar()
 
 <TaskPopup>
     id: task_popup
@@ -106,4 +112,69 @@ TimeBlocks:
     elevation: 0
     Label:
         id: content
-    
+
+<CalendarCard>
+    MDBoxLayout:
+        orientation: "vertical"
+        Label:
+            id: header
+            text: "demo"
+        StackLayout:
+            id: list
+
+<CalendarMonth>
+    md_bg_color: app.theme_cls.bg_dark
+    radius: 10, 10, 0, 0
+    GridLayout:
+        id: grid
+        cols: 7
+        Label:
+            size_hint_y: None
+            height: 20
+            text: "Mo."
+        Label:
+            size_hint_y: None
+            height: 20
+            text: "Tu."
+        Label:
+            size_hint_y: None
+            height: 20
+            text: "We."
+        Label:
+            size_hint_y: None
+            height: 20
+            text: "Th."
+        Label:
+            size_hint_y: None
+            height: 20
+            text: "Fr."
+        Label:
+            size_hint_y: None
+            height: 20
+            text: "Sa."
+        Label:
+            size_hint_y: None
+            height: 20
+            text: "Su."
+
+<CalendarDisplay>
+
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: 10
+        Label:
+            id: header
+            size_hint: (1, 0.07)
+
+        MDSwiper:
+            id: swiper
+            width_mult: 0.5
+            items_spacing: 25
+            radius: 20
+
+
+    MDIconButton:
+        id: planer_button
+        icon: "notebook-outline"
+        pos_hint: {"center_x": .92, "center_y": .05}
+        on_release: self.parent.show_planer()
