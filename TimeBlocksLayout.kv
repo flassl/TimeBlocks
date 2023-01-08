@@ -24,39 +24,59 @@ TimeBlocks:
             NavigationDrawerContent:
                 id: navigation_drawer_content
 
+<PlanerDay>
+    do_scroll_y: True
+    MDBoxLayout:
+        size_hint_y: None
+        height: time_display.height
+        MDBoxLayout:
+            orientation: 'vertical'
+            id: time_display
+            size_hint: (0.15, None)
+            md_bg_color: app.theme_cls.bg_dark
+            radius: 0, 20, 20, 0
+        MDFloatLayout:
+            id: planer_float_layout
+            size_hint: (1, None)
 
 <PlanerDisplay>
-    time_display: time_display
     date_text: date_text
     MDBoxLayout:
         orientation: 'vertical'
-        MDLabel:
-            id:date_text
-            text_size: self.size
-            halign: 'center'
-            text: 'hello'
-            color: app.theme_cls.primary_dark
-            size_hint_y: 0.05
-            width: self.width
-            pos_hint: {"center_x": .5}
-        MDScrollView:
-            id: planer_scroll_view
-            do_scroll_y: True
-            MDBoxLayout:
-                size_hint_y: None
-                height: time_display.height
-                MDBoxLayout:
-                    orientation: 'vertical'
-                    id: time_display
-                    size_hint: (0.15, None)
-                    md_bg_color: app.theme_cls.bg_dark
-                    radius: 0, 20, 20, 0
-
-                MDFloatLayout:
-                    id: planer_float_layout
-                    size_hint: (1, None)
-
-
+        MDBoxLayout:
+            orientation: "horizontal"
+            size_hint_y : 0.05
+            MDIconButton:
+                id: next_button
+                icon: "chevron-left"
+                on_release: self.parent.parent.parent.show_previous()
+                pos_hint: {"center_x": .5, "center_y": .5}
+            MDLabel:
+                id:date_text
+                text_size: self.size
+                halign: 'center'
+                valign: 'center'
+                text: 'hello'
+                color: app.theme_cls.primary_dark
+                width: self.width
+                pos_hint: {"center_x": .5, "center_y": .5}
+            MDIconButton:
+                id: previous_button
+                icon: "chevron-right"
+                on_release: self.parent.parent.parent.show_next()
+                pos_hint: {"center_x": .5, "center_y": .5}
+        ScreenManager:
+            id: screen_manager
+            MDScreen:
+                id: planer_screen_1
+                name: "planer_screen_1"
+                PlanerDay:
+                    id: planer_day_1
+            MDScreen:
+                id: planer_screen_2
+                name: "planer_screen_2"
+                PlanerDay:
+                    id: planer_day_2
 
     MDFloatingActionButtonSpeedDial:
         id: fab
@@ -114,6 +134,7 @@ TimeBlocks:
         id: content
 
 <CalendarCard>
+    on_release: self.go_to_planer()
     MDBoxLayout:
         orientation: "vertical"
         Label:
@@ -177,4 +198,4 @@ TimeBlocks:
         id: planer_button
         icon: "notebook-outline"
         pos_hint: {"center_x": .92, "center_y": .05}
-        on_release: self.parent.show_planer()
+        on_release: self.parent.back_to_planer()

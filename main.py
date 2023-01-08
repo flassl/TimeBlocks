@@ -3,6 +3,7 @@ from db_utility import *
 from calendar_display import *
 from calendar_card import *
 from calendar_month import *
+from planer_day import *
 from kivy.core.window import Window
 from kivy.metrics import dp
 window_width = dp(360)
@@ -19,6 +20,7 @@ from kivy.uix.scrollview import ScrollView
 from kivymd.uix.stacklayout import MDStackLayout
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
+from kivy.uix.screenmanager import FadeTransition
 from kivymd.uix.card import MDCard, MDCardSwipe, MDCardSwipeFrontBox, MDCardSwipeLayerBox
 from kivymd.uix.button import MDRectangleFlatButton, MDIconButton, MDFlatButton
 from kivymd.uix.textfield import MDTextField
@@ -61,17 +63,27 @@ class TimeBlocks(MDScreen):
 class PlanerDisplay(MDFloatLayout):
     displayed_date = datetime.now().date()
 
+    screen_manager = None
+    active_planer_screen_name = None
+    active_planer_day = None
+
     def __init__(self, **kwargs):
         super(PlanerDisplay, self).__init__(**kwargs)
         self.dialog = None
+        Clock.schedule_once(self._set_variables, 0.1)
         Clock.schedule_once(self._add_labels, 0.1)
         Clock.schedule_once(partial(self.show_tasks, date.today()), 0.1)
+
+    def _set_variables(self, dt):
+        self.screen_manager = self.ids.screen_manager
+        self.active_planer_screen_name = self.screen_manager.current
+        self.active_planer_day = self.screen_manager.get_screen(self.active_planer_screen_name).children[0]
 
     def _add_labels(self, dt):
         time_display_font_size = font_size * 0.8
         half_space_widget = MDLabel(text="    ",
                                   size_hint_y=None, font_size=time_display_font_size, height=item_height / 2)
-        self.ids.time_display.add_widget(half_space_widget)
+        self.active_planer_day.ids.time_display.add_widget(half_space_widget)
         for h in range(0, displayed_hours):
             hour = start_hour + h
             string_hour = "{:02d}".format(hour)
@@ -89,15 +101,17 @@ class PlanerDisplay(MDFloatLayout):
                     label = MDLabel(text="     ",
                                   size_hint_y=None, font_size=time_display_font_size, height=item_height)
 #
-                self.ids.time_display.add_widget(label)
+                self.active_planer_day.ids.time_display.add_widget(label)
         half_space_widget_end = MDLabel(text=" ", size_hint_y=None, font_size=time_display_font_size,
                                         height=item_height / 2)
         self.width = 30
-        self.ids.time_display.add_widget(half_space_widget_end)
-        self.ids.time_display.height = displayed_hours * 4 * item_height + item_height / 2
+        self.active_planer_day.ids.time_display.add_widget(half_space_widget_end)
+        self.active_planer_day.ids.time_display.height = displayed_hours * 4 * item_height + item_height / 2
         self.ids.date_text.text = self.displayed_date.strftime("%A, %d/%m/%Y")
 
     def show_tasks(self, planer_date, dt):
+        self.displayed_date = planer_date
+        self.ids.date_text.text = planer_date.strftime("%A, %d/%m/%Y")
         app = MDApp.get_running_app()
         root = app.root
         date_start_timestamp = datetime.combine(planer_date, time(0, 0, 0)).timestamp()
@@ -107,8 +121,7 @@ class PlanerDisplay(MDFloatLayout):
                        f"'{date_end_timestamp}'")
         planer_tasks_db = cursor.fetchall()
         connection.commit()
-        self.ids.planer_float_layout.clear_widgets()
-        print(planer_tasks_db)
+        self.active_planer_day.ids.planer_float_layout.clear_widgets()
         for row in planer_tasks_db:
             if row[1] == 0:
                 cursor.execute(f"SELECT * FROM ToDoTasks WHERE task_reference = '{row[2]}'")
@@ -121,8 +134,49 @@ class PlanerDisplay(MDFloatLayout):
                 new_task.ids.content.text = task_values[5]
                 new_task.top = task_values[6]
                 new_task.pos = [50, new_task.pos[1]]
-                self.ids.planer_float_layout.add_widget(new_task)
-                #planer_task_list.append(new_task)
+                self.active_planer_day.ids.planer_float_layout.add_widget(new_task)
+                #planer_task_list.append(new_task
+
+    def update_screen_values(self, current_screen):
+        self.active_planer_screen_name = current_screen.name
+        self.active_planer_day = current_screen.children[0]
+
+    def fill_screen(self, date):
+
+        print(self.screen_manager.screens)
+        screen = MDScreen(name= "hola")
+        planer_day = PlanerDay()
+        screen.add_widget(planer_day)
+        self.update_screen_values(screen)
+        self.displayed_date = date
+        self._add_labels(0)
+        self.show_tasks(self.displayed_date, 0)
+        self.screen_manager.add_widget(screen)
+        return screen
+
+    def get_other_screen(self, date):
+        print(self.screen_manager.screens)
+        other_screen = None
+        for screen in self.screen_manager.screens:
+            if self.screen_manager.current != screen.name:
+                other_screen = screen
+        if other_screen == None:
+            screen = MDScreen(name="hola")
+            planer_day = PlanerDay()
+            screen.add_widget(planer_day)
+            other_screen = screen
+        self.update_screen_values(other_screen)
+        self.displayed_date = date
+        self._add_labels(0)
+        self.show_tasks(self.displayed_date, 0)
+        return other_screen
+
+    def show_previous(self):
+        self.screen_manager.switch_to(self.get_other_screen(self.displayed_date - timedelta(days=1)), direction="right", duration=0.5)
+
+    def show_next(self):
+        self.screen_manager.switch_to(self.get_other_screen(self.displayed_date + timedelta(days=1)), direction="left",
+                                      duration=0.5)
 
     def fab_callback(self, instance):
         pressed_icon = instance.icon
@@ -145,11 +199,11 @@ class PlanerDisplay(MDFloatLayout):
     def show_calendar(self):
         root = MDApp.get_running_app().root
         screen_manager = root.ids.screen_manager
-        screen_manager.on_complete = root.ids.calendar_display.on_shown()
-        screen_manager.switch_to(root.ids.calendar_screen, direction="down", duration="1")
-        screen_manager.current = "calendar"
-        root.ids.calendar_display.ids.swiper.set_current(date.today().month - 1)
-
+        if screen_manager and root.ids.calendar_screen:
+            screen_manager.on_complete = root.ids.calendar_display.on_shown()
+            screen_manager.switch_to(root.ids.calendar_screen, direction="down", duration="1")
+            screen_manager.current = "calendar"
+            root.ids.calendar_display.ids.swiper.set_current(date.today().month - 1)
 
 
 class TaskPopup(MDDialog):
@@ -202,8 +256,12 @@ class Task(MDCard):
             recreate_in_planer()
             self.pos = [50, calculate_snapping_point(MDApp.get_running_app().root.ids.planer_display.ids.planer_scroll_view,
                                                   self.current_touch_position[1] - self.height / 2)]
+            if self.active == 0:
+                save_planer(0, self.task_id, datetime.now())
+
             de_activate_to_do(self.task_id, 1, 0, self.top)
-            save_planer(0, self.task_id, datetime.now())
+            self.active = 1
+
 
         dragging = False
         return super().on_touch_up(touch)
@@ -237,7 +295,7 @@ class Task(MDCard):
 
     def follow_touch(self, dt):
         if self.current_touch_position:
-            touch_pos = [self.current_touch_position[0], self.current_touch_position[1] - self.height / 2]
+            touch_pos = [self.current_touch_position[0] - self.width / 3, self.current_touch_position[1] - self.height / 2]
             self.pos = touch_pos
             if self.positioning_hint:
                 self.positioning_hint.pos =\

@@ -71,7 +71,7 @@ def create_db():
             CREATE TABLE IF NOT EXISTS PlanerTasks (
             task_reference integer PRIMARY KEY,
             task_type integer NOT NULL,
-            task_id integer NOT NULL,
+            task_id integer NOT NULL UNIQUE,
             planed_date_timestamp integer NOT NULL
             )
             """)
@@ -151,24 +151,10 @@ def save_planer(task_type, task_id, planed_date):
         planed_date = datetime.combine(planed_date, time(0, 0)).timestamp()
     if isinstance(planed_date, datetime):
         planed_date = planed_date.timestamp()
-    cursor.execute(
-        f"SELECT * FROM PlanerTasks WHERE task_reference = '{task_id}'")
-    connection.commit()
-    planer_entry = cursor.fetchall()
-    if len(planer_entry) > 0:
-        cursor.execute(
-            f"UPDATE PlanerTasks "
-            f"SET "
-            f"task_type = '{task_type}', "
-            f"planed_date_timestamp = '{planed_date}' "
-            f"WHERE "
-            f"task_reference = '{task_id}'")
-        connection.commit()
-    else:
 
-        cursor.execute(
+    cursor.execute(
             f"INSERT INTO PlanerTasks VALUES(NULL, '{task_type}', '{task_id}', '{planed_date}')")
-        connection.commit()
+    connection.commit()
 
 
 def remove_planer(ID, task_type):
