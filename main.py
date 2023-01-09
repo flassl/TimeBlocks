@@ -120,6 +120,7 @@ class PlanerDisplay(MDFloatLayout):
         cursor.execute(f"SELECT * FROM PlanerTasks WHERE planed_date_timestamp BETWEEN '{date_start_timestamp}' AND "
                        f"'{date_end_timestamp}'")
         planer_tasks_db = cursor.fetchall()
+        print(planer_tasks_db)
         connection.commit()
         self.active_planer_day.ids.planer_float_layout.clear_widgets()
         for row in planer_tasks_db:
@@ -231,6 +232,8 @@ class Task(MDCard):
     current_touch_position = None
     positioning_hint = None
 
+    active_planer_day = None
+
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
             self.timer = Clock.schedule_once(self.on_long_press, 0.3)
@@ -240,8 +243,6 @@ class Task(MDCard):
     def on_touch_up(self, touch):
         global dragging
 
-        planer_display = MDApp.get_running_app().root.ids.planer_display
-
         if self.timer:
             self.timer.cancel()
         if self.movement_tick:
@@ -250,16 +251,19 @@ class Task(MDCard):
         def recreate_in_planer():
             temp = self
             self.parent.remove_widget(self)
-            planer_display.ids.planer_float_layout.add_widget(temp)
+            self.active_planer_day.ids.planer_float_layout.add_widget(temp)
             self.elevation = 0
         if dragging:
             recreate_in_planer()
-            self.pos = [50, calculate_snapping_point(MDApp.get_running_app().root.ids.planer_display.ids.planer_scroll_view,
+            self.pos = [50, calculate_snapping_point(self.active_planer_day,
                                                   self.current_touch_position[1] - self.height / 2)]
             if self.active == 0:
-                save_planer(0, self.task_id, datetime.now())
+                save_planer(0, self.task_id, MDApp.get_running_app().root.ids.planer_display.displayed_date)
 
             de_activate_to_do(self.task_id, 1, 0, self.top)
+            update_task(self.task_id, MDApp.get_running_app().root.ids.planer_display.displayed_date,
+                        self.ids.content.text, self.top, 1)
+            print(MDApp.get_running_app().root.ids.planer_display.displayed_date)
             self.active = 1
 
 
@@ -288,7 +292,10 @@ class Task(MDCard):
         def show_positioning_hint():
             self.positioning_hint = PositioningHint()
             self.positioning_hint.height = self.height
-            MDApp.get_running_app().root.ids.planer_display.ids.planer_float_layout.add_widget(self.positioning_hint)
+            screen_manager = MDApp.get_running_app().root.ids.planer_display.screen_manager
+            active_planer_screen_name = screen_manager.current
+            self.active_planer_day = screen_manager.get_screen(active_planer_screen_name).children[0]
+            self.active_planer_day.ids.planer_float_layout.add_widget(self.positioning_hint)
 
         recreate_in_root()
         show_positioning_hint()
@@ -299,7 +306,7 @@ class Task(MDCard):
             self.pos = touch_pos
             if self.positioning_hint:
                 self.positioning_hint.pos =\
-                    [50, calculate_snapping_point(MDApp.get_running_app().root.ids.planer_display.ids.planer_scroll_view,
+                    [50, calculate_snapping_point(self.active_planer_day,
                                                   self.current_touch_position[1] - self.height / 2)]
         pass
 
