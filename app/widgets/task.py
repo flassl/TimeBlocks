@@ -1,9 +1,11 @@
 from kivymd.uix.card import MDCard
-from App.Utility.db_utility import *
-from App.Utility.utility import *
+from app.utility.db_utility import *
+from app.utility.utility import *
 from kivymd.app import MDApp
 from kivy.clock import Clock
 from .positioning_hint import *
+
+dragging = False
 
 
 class Task(MDCard):

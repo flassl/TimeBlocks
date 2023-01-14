@@ -274,7 +274,7 @@ def de_activate_recurrent(ID, active, done, new_top, update_date):
 #def show_due_recurrent_tasks(dt):
 #
 #    def show_recurrent(task):
-#        app = App.get_running_app()
+#        app = app.get_running_app()
 #        recurrent = app.root.planer.recurrent
 #        now = datetime.now()
 #        top = recurrent.top - item_height - spacing * 2 - len(recurrent_task_list) * (item_height + spacing)
@@ -323,7 +323,7 @@ def de_activate_recurrent(ID, active, done, new_top, update_date):
 #        connection.commit()
 #        if entry:
 #            if entry[1] < limit_time_timestamp and task[3] < 0:
-#                app = App.get_running_app()
+#                app = app.get_running_app()
 #                recurrent = app.root.planer.recurrent
 #                now = datetime.now()
 #                top = recurrent.top - item_height - spacing * 2 - len(recurrent_task_list) * (item_height + spacing)

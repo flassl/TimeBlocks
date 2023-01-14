@@ -6,7 +6,7 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.app import MDApp
 from kivymd.uix.snackbar import Snackbar
 
-from App.Utility.db_utility import *
+from app.utility.db_utility import *
 
 content = None
 

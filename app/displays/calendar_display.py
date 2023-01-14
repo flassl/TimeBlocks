@@ -1,5 +1,5 @@
-from App.Widgets.calendar_card import *
-from App.Templates.calendar_month import *
+from app.widgets.calendar_card import *
+from app.templates.calendar_month import *
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.app import MDApp
 import calendar
@@ -51,3 +51,28 @@ class CalendarDisplay(MDFloatLayout):
         root = MDApp.get_running_app().root
         root.ids.planer_display.show_tasks(date, 0)
         self.back_to_planer()
+
+    def get_other_screen(self, date):
+        print(self.screen_manager.screens)
+        other_screen = None
+        for screen in self.screen_manager.screens:
+            if self.screen_manager.current != screen.name:
+                other_screen = screen
+        if other_screen == None:
+            screen = MDScreen(name="hola")
+            planer_day = PlanerDay()
+            screen.add_widget(planer_day)
+            other_screen = screen
+        self.update_screen_values(other_screen)
+        self.displayed_date = date
+        self._add_labels(0)
+        self.show_tasks(self.displayed_date, 0)
+        return other_screen
+
+    def show_previous(self):
+        self.screen_manager.switch_to(self.get_other_screen(self.displayed_date - timedelta(days=1)), direction="right", duration=0.5)
+
+    def show_next(self):
+        self.screen_manager.switch_to(self.get_other_screen(self.displayed_date + timedelta(days=1)), direction="left",
+                                      duration=0.5)
+

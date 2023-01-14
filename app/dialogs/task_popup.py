@@ -1,6 +1,6 @@
 from kivymd.uix.dialog import MDDialog
 from kivy.clock import Clock
-from App.Utility.db_utility import *
+from app.utility.db_utility import *
 
 
 class TaskPopup(MDDialog):
