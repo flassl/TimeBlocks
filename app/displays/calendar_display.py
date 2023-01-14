@@ -49,7 +49,7 @@ class CalendarDisplay(MDFloatLayout):
         self.active_calendar_month = current_screen.children[0]
 
     def update_header_label(self):
-        self.ids.header.text = self.displayed_date_in_month.strftime("%m/%Y")
+        self.ids.header.text = self.displayed_date_in_month.strftime("%B %Y")
 
     def on_shown(self):
         # animate the icon button popping out from the right
@@ -79,7 +79,8 @@ class CalendarDisplay(MDFloatLayout):
         self.update_screen_values(other_screen)
         self.displayed_date_in_month = date_in_month
         self.update_header_label()
-        self.fill_month(date_in_month, 0)
+        if self.displayed_date_in_month != date_in_month:
+            self.fill_month(date_in_month, 0)
         return other_screen
 
     def show_previous(self):
