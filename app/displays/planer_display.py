@@ -61,7 +61,6 @@ class PlanerDisplay(MDFloatLayout):
         cursor.execute(f"SELECT * FROM PlanerTasks WHERE planed_date_timestamp BETWEEN '{date_start_timestamp}' AND "
                        f"'{date_end_timestamp}'")
         planer_tasks_db = cursor.fetchall()
-        print(planer_tasks_db)
         connection.commit()
         self.active_planer_day.ids.planer_float_layout.clear_widgets()
 
@@ -154,3 +153,8 @@ class PlanerDisplay(MDFloatLayout):
             screen_manager.on_complete = root.ids.calendar_display.on_shown()
             screen_manager.switch_to(root.ids.calendar_screen, direction="down", duration="1")
             screen_manager.current = "calendar"
+
+
+
+
+

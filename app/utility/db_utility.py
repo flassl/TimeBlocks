@@ -15,7 +15,7 @@ def delete_db():
 
 
 def create_db():
-    # delete_db()
+    #delete_db()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS ToDoTasks (
     task_reference integer PRIMARY KEY,

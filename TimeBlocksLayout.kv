@@ -131,8 +131,17 @@ TimeBlocks:
     size_hint_y: None
     height: 30
     elevation: 0
+    on_release: self.show_menu()
     Label:
         id: content
+
+<TaskMenu>
+    size_hint_x: 0.2
+    ExpandButton:
+        id: expand_button
+        icon: "arrow-expand-down"
+        icon_size: "10sp"
+        pos_hint: {"center_x": .5, "center_y": .5}
 
 <RecurrentDialogContent>
     orientation: "vertical"

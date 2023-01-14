@@ -39,7 +39,6 @@ class CalendarDisplay(MDFloatLayout):
             calendar_card = CalendarCard(date(day_in_month.year, day_in_month.month, day + 1))
             calendar_card.ids.header.text = str(day + 1)
             self.active_calendar_month.ids.grid.add_widget(calendar_card)
-            print(day)
 
         self.update_header_label()
         pass
@@ -66,7 +65,6 @@ class CalendarDisplay(MDFloatLayout):
         self.back_to_planer()
 
     def get_other_screen(self, date_in_month):
-        print(self.screen_manager.screens)
         other_screen = None
         for screen in self.screen_manager.screens:
             if self.screen_manager.current != screen.name:
