@@ -1,6 +1,6 @@
-from kivymd.uix.swiper import MDSwiperItem
+from kivymd.uix.boxlayout import MDBoxLayout
 
 
-class CalendarMonth(MDSwiperItem):
+class CalendarMonth(MDBoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

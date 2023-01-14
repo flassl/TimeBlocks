@@ -187,6 +187,7 @@ TimeBlocks:
 <CalendarMonth>
     md_bg_color: app.theme_cls.bg_dark
     radius: 10, 10, 0, 0
+    orientation: "vertical"
     GridLayout:
         id: grid
         cols: 7
@@ -224,16 +225,40 @@ TimeBlocks:
     MDBoxLayout:
         orientation: "vertical"
         spacing: 10
-        Label:
-            id: header
+        MDBoxLayout:
             size_hint: (1, 0.07)
+            MDIconButton:
+                id: next_button
+                icon: "chevron-left"
+                on_release: self.parent.parent.parent.show_previous()
+                pos_hint: {"center_x": .5, "center_y": .5}
+            MDLabel:
+                id: header
+                halign: 'center'
+                valign: 'center'
+                color: app.theme_cls.primary_dark
+                pos_hint: {"center_x": .5, "center_y": .5}
+            MDIconButton:
+                id: previous_button
+                icon: "chevron-right"
+                on_release: self.parent.parent.parent.show_next()
+                pos_hint: {"center_x": .5, "center_y": .5}
 
 
-        MDSwiper:
-            id: swiper
-            width_mult: 0.5
-            items_spacing: 25
-            radius: 20
+
+        ScreenManager:
+            id: screen_manager
+            MDScreen:
+                id: calendar_screen_1
+                name: "calendar_screen_1"
+                CalendarMonth:
+                    id: calendar_month_1
+            MDScreen:
+                id: calendar_screen_2
+                name: "calendar_screen_2"
+                CalendarMonth:
+                    id: calendar_month_2
+
 
 
     MDIconButton:

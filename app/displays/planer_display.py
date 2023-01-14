@@ -154,4 +154,3 @@ class PlanerDisplay(MDFloatLayout):
             screen_manager.on_complete = root.ids.calendar_display.on_shown()
             screen_manager.switch_to(root.ids.calendar_screen, direction="down", duration="1")
             screen_manager.current = "calendar"
-            root.ids.calendar_display.ids.swiper.set_current(date.today().month - 1)
