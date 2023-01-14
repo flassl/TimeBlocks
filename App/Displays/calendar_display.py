@@ -1,6 +1,5 @@
-from kivymd.uix.boxlayout import MDBoxLayout
-from calendar_card import *
-from calendar_month import *
+from App.Widgets.calendar_card import *
+from App.Templates.calendar_month import *
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.app import MDApp
 import calendar

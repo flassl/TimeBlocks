@@ -91,6 +91,7 @@ TimeBlocks:
     MDIconButton:
         icon: "cached"
         pos_hint: {"center_x": .92, "center_y": .7}
+        on_release: self.parent.show_recurrent_list()
 
     MDIconButton:
         icon: "calendar"
@@ -132,6 +133,46 @@ TimeBlocks:
     elevation: 0
     Label:
         id: content
+
+<RecurrentDialogContent>
+    orientation: "vertical"
+    spacing: 10
+    size_hint_y: None
+    height: 250
+    MDTextField:
+        id: text_field_name
+        hint_text: "Enter the Recurrent task to add"
+        multiline: False
+        helper_text_mode: "on_error"
+        helper_text: "Enter text"
+    MDBoxLayout:
+        MDLabel:
+            id: recur_label
+            text: "recurs every: "
+        MDTextField:
+            id: text_field_number
+            hint_text: "amount"
+            helper_text_mode: "on_error"
+            helper_text: "Enter text"
+
+    MDBoxLayout:
+        adaptive_width: True
+        spacing: 20
+        pos_hint: {"center_x": .5, "center_y": .5}
+        AppToggleButton:
+            text: "Hours"
+            group: "period_dropdown"
+            on_release: self.parent.parent.set_selected(self)
+        AppToggleButton:
+            text: "Days"
+            group: "period_dropdown"
+            on_release: self.parent.parent.set_selected(self)
+        AppToggleButton:
+            text: "Weeks"
+            group: "period_dropdown"
+            on_release: self.parent.parent.set_selected(self)
+    Widget:
+
 
 <CalendarCard>
     on_release: self.go_to_planer()
