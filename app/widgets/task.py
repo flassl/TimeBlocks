@@ -1,4 +1,5 @@
 from kivy.animation import Animation
+from kivy.utils import rgba
 from kivymd.uix.button import MDIconButton
 from kivymd.uix.card import MDCard
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -10,25 +11,36 @@ from .positioning_hint import *
 import math
 
 
-
-
 class Task(MDCard):
-    def __init__(self, id, task_type, active, **kwargs):
+    def __init__(self, id, task_type, active, done, **kwargs):
         super(Task, self).__init__(**kwargs)
         self.task_id = id
         self.active = active
         self.task_type = task_type
+        self.done = done
+        if self.done:
+            self.check_button = CheckButton()
+            self.check_button.icon = "check-circle"
+
+            def update_check_button(dt):
+                self.check_button.children[0].color = [0.5, 0.8, 0, 1]
+                self.checked = True
+
+            Clock.schedule_once(update_check_button, 0.1)
+            self.ids.check_layout.add_widget(self.check_button)
     timer = None
     movement_tick = None
     current_touch_position = None
     positioning_hint = None
     task_menu = None
-    menu_showing = False
+    options_showing = False
     close_menu_timer = None
     stretching = False
     dragging = False
     fab_is_deleting = False
     deleted = False
+    check_button = None
+    checked = False
 
     active_planer_day = None
 
@@ -156,25 +168,73 @@ class Task(MDCard):
                     [50, calculate_snapping_point(self.active_planer_day,
                                                   self.current_touch_position[1] - self.height / 2)]
 
-    def show_menu(self):
+    def show_options(self):
+        def show_menu():
+            if not self.task_menu:
+                self.task_menu = TaskMenu()
+            if not self.options_showing:
+                self.ids.menu_layout.add_widget(self.task_menu)
+
+        def show_check_button():
+            if not self.check_button:
+                self.check_button = CheckButton()
+            if not self.options_showing:
+                self.ids.check_layout.add_widget(self.check_button)
+
         # ToDo: fade in animation
-        def close_menu(dt):
-            if self.task_menu:
-                self.remove_widget(self.task_menu)
-                self.menu_showing = False
-            # ToDo: fade away animation
-            pass
+        show_menu()
+        if not self.done:
+            show_check_button()
         if self.close_menu_timer:
             self.close_menu_timer.cancel()
-        self.close_menu_timer = Clock.schedule_once(close_menu, 2)
-        if not self.task_menu:
-            self.task_menu = TaskMenu()
-        if not self.menu_showing:
-            self.add_widget(self.task_menu)
-            label = self.ids.content
-            self.remove_widget(label)
-            self.add_widget(label)
-            self.menu_showing = True
+        self.close_menu_timer = Clock.schedule_once(self.hide_options, 2)
+        self.options_showing = True
+
+    def hide_options(self, dt):
+        def hide_menu():
+            if self.task_menu and self.task_menu.parent:
+                self.task_menu.parent.remove_widget(self.task_menu)
+            # ToDo: fade away animation
+
+        def hide_check_button():
+            self.check_button.parent.remove_widget(self.check_button)
+
+        self.options_showing = False
+        hide_menu()
+        if not self.done:
+            hide_check_button()
+
+    def toggle_check(self, *args):
+        def save_in_db():
+            if self.task_type == 0:
+                de_activate_to_do(self.task_id, self.active, self.done, self.top)
+            if self.task_type == 1:
+                de_activate_recurrent(self.task_id, self.active, self.done, self.top, datetime.now())
+            if self.task_type == 2:
+                # ToDo: implement for event
+                pass
+
+        def check_task():
+
+            self.check_button.icon = "check-circle"
+            self.check_button.children[0].color = [0.5, 0.8, 0, 1]
+            self.done = 1
+            save_in_db()
+
+        def uncheck_task():
+            self.check_button.icon = "check-circle-outline"
+            self.check_button.children[0].color = [1, 1, 1, 1]
+            self.done = 0
+            save_in_db()
+
+        self.checked = not self.checked
+        if self.checked:
+            check_task()
+        else:
+            uncheck_task()
+        if self.close_menu_timer:
+            self.close_menu_timer.cancel()
+        self.close_menu_timer = Clock.schedule_once(self.hide_options, 2)
 
 
 class TaskMenu(MDBoxLayout):
@@ -182,43 +242,43 @@ class TaskMenu(MDBoxLayout):
     stretch_start_y = None
     start_pos = None
     start_height = None
+    parent_task = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.expand_button = self.ids.expand_button
+        Clock.schedule_once(self.set_variables, 0.1)
+
+    def set_variables(self, dt):
+        self.parent_task = self.parent.parent
 
     def start_expansion(self, touch):
-        self.parent.stretching = True
+        self.parent_task.stretching = True
         self.stretch_start_y = touch.pos[1]
-        self.start_pos = self.parent.pos[1]
-        self.start_height = self.parent.height
-        print("touch staerted at:" + str(touch.pos[1]))
-        self.parent.timer.cancel()
-        self.parent.close_menu_timer.cancel()
-        if self.parent.positioning_hint:
-            self.parent.parent.remove_widget(self.parent.positioning_hint)
-        print("stretching")
+        self.start_pos = self.parent_task.pos[1]
+        self.start_height = self.parent_task.height
+        self.parent_task.timer.cancel()
+        self.parent_task.close_menu_timer.cancel()
+        if self.parent_task.positioning_hint:
+            self.parent_task.parent.remove_widget(self.parent_task.positioning_hint)
 
     def end_expansion(self):
-        if self.parent:
-            if self.parent.stretching:
-                self.parent.stretching = False
-                self.parent.menu_showing = False
-                self.parent.remove_widget(self)
+        if self.parent_task:
+            if self.parent_task.stretching:
+                self.parent_task.stretching = False
+                self.parent_task.options_showing = False
+                self.parent_task.hide_options(0)
                 self.stretch_start_y = None
                 self.start_pos = None
                 self.start_height = None
-                print("not stretching anymore")
 
     def on_touch_move(self, touch):
         if self.stretch_start_y:
             delta_y = self.stretch_start_y - touch.pos[1]
             if self.start_height + delta_y > item_height:
                 delta_blocks = math.floor(delta_y / item_height)
-                self.parent.pos[1] = self.start_pos - delta_blocks * item_height
-                self.parent.size[1] = self.start_height + delta_blocks * item_height
-
-                print(self.parent.size[1])
+                self.parent_task.pos[1] = self.start_pos - delta_blocks * item_height
+                self.parent_task.size[1] = self.start_height + delta_blocks * item_height
 
         return super().on_touch_move(touch)
 
@@ -240,4 +300,8 @@ class ExpandButton(MDIconButton):
         return super().on_touch_up(touch)
 
 
+class CheckButton(MDIconButton):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 

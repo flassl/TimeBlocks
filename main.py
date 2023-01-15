@@ -40,7 +40,7 @@ def load_tasks_to_list(task_type):
     scroll_view.clear_widgets()
 
     def append_task_to_list(task):
-        new_task = Task(task[0], task[1], task[3])
+        new_task = Task(task[0], task[1], task[3], task[4])
         new_task.ids.content.text = task[5]
         scroll_view.add_widget(new_task)
 

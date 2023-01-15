@@ -71,7 +71,7 @@ class PlanerDisplay(MDFloatLayout):
             # if task_values[4] == 1:
             #   load_checked_task(task_values[5], task_values[6], task_values[7], task_values[2])
             # else:
-            new_task = Task(task_values[0], task_values[1], task_values[3])
+            new_task = Task(task_values[0], task_values[1], task_values[3], task_values[4])
             new_task.ids.content.text = task_values[5]
             new_task.top = task_values[6]
             new_task.pos = [50, new_task.pos[1]]

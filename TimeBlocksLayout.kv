@@ -131,9 +131,15 @@ TimeBlocks:
     size_hint_y: None
     height: 30
     elevation: 0
-    on_release: self.show_menu()
+    on_release: self.show_options()
+    MDBoxLayout:
+        size_hint_x: 0.2
+        id: menu_layout
     Label:
         id: content
+    MDBoxLayout:
+        size_hint_x: 0.15
+        id: check_layout
 
 <TaskMenu>
     size_hint_x: 0.2
@@ -142,6 +148,14 @@ TimeBlocks:
         icon: "arrow-expand-down"
         icon_size: "10sp"
         pos_hint: {"center_x": .5, "center_y": .5}
+
+<CheckButton>
+    id: "check_button"
+    icon: "check-circle-outline"
+    size_hint: (None, None)
+    icon_size: "15sp"
+    pos_hint: {"center_x": .5, "center_y": .5}
+    on_release: self.parent.parent.toggle_check()
 
 <RecurrentDialogContent>
     orientation: "vertical"

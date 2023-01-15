@@ -29,4 +29,3 @@ def offset_date_by_months(input_date, offset):
 
 def rotate_Widget(widget, angle):
     Animation(rotate_value_angle=angle, d=0.3).start(widget)
-    print("rotated: " + str(angle))
