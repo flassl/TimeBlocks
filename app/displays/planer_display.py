@@ -131,20 +131,28 @@ class PlanerDisplay(MDFloatLayout):
 
         if pressed_icon == fab_icons.get("task"):
             fab.close_stack()
-            self.dialog = TaskPopup()
+            self.dialog = TaskPopup(-1, [])
         elif pressed_icon == fab_icons.get("recurrent"):
             fab.close_stack()
-            self.dialog = RecurrentDialog()
+            self.dialog = RecurrentDialog(-1, [])
         else:
             pass
 
     def show_task_list(self):
         load_tasks_to_list(0)
-        MDApp.get_running_app().root.ids.navigation_drawer.set_state("open")
+        navigation_drawer = MDApp.get_running_app().root.ids.navigation_drawer
+        navigation_drawer_content = MDApp.get_running_app().root.ids.navigation_drawer_content
+        navigation_drawer.set_state("open")
+        navigation_drawer_content.display_task_type = 0
+        navigation_drawer_content.ids.drawer_title.text = "To Do:"
 
     def show_recurrent_list(self):
         load_tasks_to_list(1)
-        MDApp.get_running_app().root.ids.navigation_drawer.set_state("open")
+        navigation_drawer = MDApp.get_running_app().root.ids.navigation_drawer
+        navigation_drawer_content = MDApp.get_running_app().root.ids.navigation_drawer_content
+        navigation_drawer.set_state("open")
+        navigation_drawer_content.display_task_type = 1
+        navigation_drawer_content.ids.drawer_title.text = "Recurring Tasks:"
 
     def show_calendar(self):
         root = MDApp.get_running_app().root

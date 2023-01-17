@@ -15,7 +15,7 @@ def delete_db():
 
 
 def create_db():
-    #delete_db()
+    # delete_db()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS ToDoTasks (
     task_reference integer PRIMARY KEY,
@@ -101,6 +101,17 @@ def create_db():
     connection.commit()
 
 
+def remove_from_db(task_id, task_type):
+    if task_type == 0:
+        remove_task(task_id)
+        pass
+    if task_type == 1:
+        remove_recurrent(task_id)
+    if task_type == 2:
+        # implement delete events
+        pass
+
+
 def save_task(task_type, creation_date, active, done, text, top, duration):
     date_timestamp = datetime.timestamp(creation_date)
     cursor.execute(
@@ -142,6 +153,21 @@ def remove_task(ID):
         f"DELETE FROM ToDoTasks "
         f"WHERE task_reference = '{ID}'")
     connection.commit()
+
+
+def get_task(id, task_type):
+    db_name = None
+    if task_type == 0:
+        db_name = "ToDoTasks"
+    if task_type == 1:
+        db_name = "RecurrentTasks"
+    cursor.execute(
+        f"SELECT * FROM {db_name} "
+        f"WHERE "
+        f"task_reference = '{id}' AND "
+        f"task_type ='{task_type}'")
+    connection.commit()
+    return cursor.fetchone()
 
 
 def save_planer(task_type, task_id, planed_date):

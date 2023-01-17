@@ -5,8 +5,10 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.app import MDApp
 from kivymd.uix.snackbar import Snackbar
-
+from .custom_task_dialog import *
+from kivy.clock import Clock
 from app.utility.db_utility import *
+from .custom_task_dialog import CustomTaskDialog
 
 content = None
 
@@ -22,8 +24,8 @@ class RecurrentDialogContent(MDBoxLayout):
         print(selected.text)
 
 
-class RecurrentDialog(MDDialog):
-    def __init__(self, **kwargs):
+class RecurrentDialog(CustomTaskDialog):
+    def __init__(self, task_id, input_data, **kwargs):
         self.content = RecurrentDialogContent()
         super().__init__(
             type="custom",
@@ -45,7 +47,16 @@ class RecurrentDialog(MDDialog):
               ),
             ],
             **kwargs)
+        self.task_id = task_id
+        self.input_data = input_data
         self.open()
+        Clock.schedule_once(self.fill_input_from_data, 0.1)
+
+    def fill_input_from_data(self, dt):
+        if self.task_id != -1:
+            self.content.ids.text_field_name.text = self.input_data[0]
+            self.content.ids.text_field_number.text = str(self.input_data[1])
+            self.content.selected = self.input_data[2]
 
     def add_task(self, *args):
         text_field_name = self.content.ids.text_field_name
@@ -74,8 +85,12 @@ class RecurrentDialog(MDDialog):
             test_boolean = False
 
         if test_boolean:
-            save_recurrent(1, datetime.today(), 0, 0, text, 0, 1, period, unit_str, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
+            if self.task_id == -1:
+                save_recurrent(1, datetime.today(), 0, 0, text, 0, 1, period, unit_str, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
+            else:
+                update_recurrent(self.task_id, datetime.now(), self.content.ids.text_field_name, 0, 1, period, unit_str, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
             print("recurrent task added: " + self.content.ids.text_field_name.text)
+            super(RecurrentDialog, self).update_drawer(1)
             self.dismiss()
         else:
             Snackbar(

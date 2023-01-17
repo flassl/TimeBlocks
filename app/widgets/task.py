@@ -1,3 +1,6 @@
+from app.dialogs.task_popup import *
+from app.dialogs.recurrent_dialog import *
+from app.utility.db_utility import *
 from kivy.animation import Animation
 from kivy.utils import rgba
 from kivymd.uix.button import MDIconButton
@@ -41,6 +44,9 @@ class Task(MDCard):
     deleted = False
     check_button = None
     checked = False
+    delete_button = None
+    expand_button = None
+    edit_button = None
 
     active_planer_day = None
 
@@ -168,12 +174,22 @@ class Task(MDCard):
                     [50, calculate_snapping_point(self.active_planer_day,
                                                   self.current_touch_position[1] - self.height / 2)]
 
+    def delete_task(self, *args):
+        remove_from_db(self.task_id, self.task_type)
+        self.parent.remove_widget(self)
+
     def show_options(self):
         def show_menu():
             if not self.task_menu:
                 self.task_menu = TaskMenu()
+                if self.active == 1:
+                    self.expand_button = ExpandButton()
+                    self.task_menu.add_widget(self.expand_button)
+                self.edit_button = EditButton()
+                self.task_menu.add_widget(self.edit_button)
             if not self.options_showing:
-                self.ids.menu_layout.add_widget(self.task_menu)
+                if self.task_menu:
+                    self.ids.menu_layout.add_widget(self.task_menu)
 
         def show_check_button():
             if not self.check_button:
@@ -181,10 +197,26 @@ class Task(MDCard):
             if not self.options_showing:
                 self.ids.check_layout.add_widget(self.check_button)
 
+        def show_delete_button():
+            if not self.delete_button:
+                self.delete_button = MDIconButton(
+                icon="delete-outline",
+                size_hint=(None, None),
+                icon_size="15sp",
+                pos_hint={"center_x": .5, "center_y": .5},
+                on_release=self.delete_task
+                )
+            if not self.options_showing:
+                self.ids.check_layout.add_widget(self.delete_button)
+
         # ToDo: fade in animation
+
         show_menu()
-        if not self.done:
-            show_check_button()
+        if self.active == 1:
+            if not self.done:
+                show_check_button()
+        else:
+            show_delete_button()
         if self.close_menu_timer:
             self.close_menu_timer.cancel()
         self.close_menu_timer = Clock.schedule_once(self.hide_options, 2)
@@ -192,7 +224,11 @@ class Task(MDCard):
 
     def hide_options(self, dt):
         def hide_menu():
-            if self.task_menu and self.task_menu.parent:
+            if self.active == 0:
+                if self.expand_button:
+                    self.task_menu.remove_widget(self.expand_button)
+                pass
+            elif self.task_menu and self.task_menu.parent:
                 self.task_menu.parent.remove_widget(self.task_menu)
             # ToDo: fade away animation
 
@@ -200,9 +236,11 @@ class Task(MDCard):
             self.check_button.parent.remove_widget(self.check_button)
 
         self.options_showing = False
+
         hide_menu()
-        if not self.done:
-            hide_check_button()
+        if self.active == 1:
+            if not self.done:
+                hide_check_button()
 
     def toggle_check(self, *args):
         def save_in_db():
@@ -236,6 +274,18 @@ class Task(MDCard):
             self.close_menu_timer.cancel()
         self.close_menu_timer = Clock.schedule_once(self.hide_options, 2)
 
+    def edit(self):
+
+        if self.task_type == 0:
+            task = get_task(self.task_id, self.task_type)
+            print(task)
+            dialog = TaskPopup(self.task_id, [task[5]])
+        if self.task_type == 1:
+            task = get_task(self.task_id, self.task_type)
+            print(self.task_id, self.task_type, task)
+            dialog = RecurrentDialog(self.task_id, [task[5], task[8], task[9]])
+
+
 
 class TaskMenu(MDBoxLayout):
     expand_button = None
@@ -246,7 +296,6 @@ class TaskMenu(MDBoxLayout):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.expand_button = self.ids.expand_button
         Clock.schedule_once(self.set_variables, 0.1)
 
     def set_variables(self, dt):
@@ -286,7 +335,13 @@ class TaskMenu(MDBoxLayout):
 class ExpandButton(MDIconButton):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(
+            icon="arrow-expand-down",
+            icon_size="10sp",
+            pos_hint={"center_x": .5, "center_y": .5},
+            *args,
+            **kwargs
+        )
 
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
@@ -298,6 +353,18 @@ class ExpandButton(MDIconButton):
         self.parent.end_expansion()
         self.md_bg_color = [0, 0, 0, 0]
         return super().on_touch_up(touch)
+
+
+class EditButton(MDIconButton):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            icon="pencil-outline",
+            icon_size="10sp",
+            pos_hint={"center_x": .5, "center_y": .5},
+            *args,
+            **kwargs
+        )
 
 
 class CheckButton(MDIconButton):

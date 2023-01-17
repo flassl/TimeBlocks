@@ -113,25 +113,36 @@ TimeBlocks:
     MDBoxLayout:
         orientation: "vertical"
         spacing: 10
-        Label:
-            id: drawer_title
+        MDBoxLayout:
+            size_hint_y: 0.08
+            MDLabel:
+                id: drawer_title
+                halign: "center"
+                theme_text_color: "Custom"
+                text_color: [0.5, 0.8, 0, 1]
+            MDIconButton:
+                icon: "plus"
+                icon_size: "15sp"
+                pos_hint: {"center_x": 0.5, "center_y": 0.5}
+                on_release: self.parent.parent.parent.add_task()
+
         MDScrollView:
+            size_hint_x: 0.95
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
             id: drawer_scroll_view
             StackLayout:
                 id: stack_layout
                 size_hint_y: None
                 height: self.minimum_height
-                canvas:
-                    Color:
-                        rgba: app.theme_cls.primary_color
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
+                spacing: 10
+
 <Task>
     size_hint_y: None
     height: 30
     elevation: 0
     on_release: self.show_options()
+    radius: 10
+    md_bg_color: [0.1, 0.1, 0.1, 1]
     MDBoxLayout:
         size_hint_x: 0.2
         id: menu_layout
@@ -143,11 +154,7 @@ TimeBlocks:
 
 <TaskMenu>
     size_hint_x: 0.2
-    ExpandButton:
-        id: expand_button
-        icon: "arrow-expand-down"
-        icon_size: "10sp"
-        pos_hint: {"center_x": .5, "center_y": .5}
+
 
 <CheckButton>
     id: "check_button"
@@ -156,6 +163,9 @@ TimeBlocks:
     icon_size: "15sp"
     pos_hint: {"center_x": .5, "center_y": .5}
     on_release: self.parent.parent.toggle_check()
+
+<EditButton>
+    on_release: self.parent.parent.parent.edit()
 
 <RecurrentDialogContent>
     orientation: "vertical"

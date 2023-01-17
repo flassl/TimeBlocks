@@ -1,5 +1,4 @@
-from datetime import date
-
+from app.utility.db_utility import *
 from kivy.animation import Animation
 
 item_height = 30
@@ -27,5 +26,8 @@ def offset_date_by_months(input_date, offset):
     offset_date = date(day=1, month=calculated_month, year=calculated_year)
     return offset_date
 
+
 def rotate_Widget(widget, angle):
     Animation(rotate_value_angle=angle, d=0.3).start(widget)
+
+
