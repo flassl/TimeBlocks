@@ -193,14 +193,17 @@ TimeBlocks:
         spacing: 20
         pos_hint: {"center_x": .5, "center_y": .5}
         AppToggleButton:
+            id: hours_button
             text: "Hours"
             group: "period_dropdown"
             on_release: self.parent.parent.set_selected(self)
         AppToggleButton:
+            id: days_button
             text: "Days"
             group: "period_dropdown"
             on_release: self.parent.parent.set_selected(self)
         AppToggleButton:
+            id: weeks_button
             text: "Weeks"
             group: "period_dropdown"
             on_release: self.parent.parent.set_selected(self)

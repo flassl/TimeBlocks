@@ -24,7 +24,7 @@ class TaskPopup(CustomTaskDialog):
             save_task(0, datetime.now(), 0, 0, self.ids.task_text_input.text, 0, 1)
         else:
             print("task updated: " + self.ids.task_text_input.text)
-            update_task(self.task_id, datetime.now(), self.ids.task_text_input.text, 0, 1)
+            update_task(self.task_id, datetime.now(), self.ids.task_text_input.text, self.input_data[1], 1)
         super(TaskPopup, self).update_drawer(0)
         self.dismiss()
 

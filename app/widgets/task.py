@@ -164,6 +164,9 @@ class Task(MDCard):
 
         recreate_in_root()
         show_positioning_hint()
+        if self.options_showing:
+            print("options showing")
+            self.hide_options(0)
 
     def follow_touch(self, dt):
         if self.current_touch_position:
@@ -233,7 +236,8 @@ class Task(MDCard):
             # ToDo: fade away animation
 
         def hide_check_button():
-            self.check_button.parent.remove_widget(self.check_button)
+            if self.check_button.parent and self.check_button:
+                self.check_button.parent.remove_widget(self.check_button)
 
         self.options_showing = False
 
@@ -279,12 +283,11 @@ class Task(MDCard):
         if self.task_type == 0:
             task = get_task(self.task_id, self.task_type)
             print(task)
-            dialog = TaskPopup(self.task_id, [task[5]])
+            dialog = TaskPopup(self.task_id, [task[5], task[6]])
         if self.task_type == 1:
             task = get_task(self.task_id, self.task_type)
             print(self.task_id, self.task_type, task)
-            dialog = RecurrentDialog(self.task_id, [task[5], task[8], task[9]])
-
+            dialog = RecurrentDialog(self.task_id, [task[5], task[8], task[9], task[6]])
 
 
 class TaskMenu(MDBoxLayout):
