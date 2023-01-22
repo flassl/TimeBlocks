@@ -1,6 +1,7 @@
 from app.widgets.task import *
 from app.dialogs.task_popup import *
 from app.dialogs.recurrent_dialog import *
+from app.dialogs.event_dialog import *
 from app.displays.calendar_display import *
 from app.templates.planer_day import *
 from app.templates.navigation_drawer_content import *
@@ -27,7 +28,7 @@ start_hour = 5
 displayed_hours = 24 - start_hour
 font_size = window_width//30
 
-fab_icons = {"task": "text-short", "recurrent": "cached", "calendar": "calendar"}
+fab_icons = {"task": "text-short", "recurrent": "cached", "event": "calendar"}
 
 
 planer_task_list = []

@@ -209,6 +209,37 @@ TimeBlocks:
             on_release: self.parent.parent.set_selected(self)
     Widget:
 
+<EventDialogContent>
+    orientation: "vertical"
+    spacing: 20
+    size_hint_y: None
+    height: 250
+    MDTextField:
+        id: text_field_name
+        hint_text: "Enter the Event's name"
+        multiline: False
+        helper_text_mode: "on_error"
+        helper_text: "Enter text"
+    MDBoxLayout:
+    MDIconButton:
+        id: time_picker_button
+        pos_hint: {"center_x": .5, "center_y": .5}
+        icon: "clock-outline"
+        on_release: self.parent.show_time_picker()
+
+    MDIconButton:
+        id: date_picker_button
+        pos_hint: {"center_x": .5, "center_y": .5}
+        icon: "calendar-badge"
+        on_release: self.parent.show_date_picker()
+    AppToggleButton:
+        id: repeat_button
+        pos_hint: {"center_x": .5, "center_y": .5}
+        text: "Repeats"
+        group: "repeat_master"
+        on_release: self.parent.show_dropdown()
+    Widget:
+
 
 <CalendarCard>
     on_release: self.go_to_planer()

@@ -135,8 +135,11 @@ class PlanerDisplay(MDFloatLayout):
         elif pressed_icon == fab_icons.get("recurrent"):
             fab.close_stack()
             self.dialog = RecurrentDialog(-1, [])
-        else:
-            pass
+
+        elif pressed_icon == fab_icons.get("event"):
+            fab.close_stack()
+            self.dialog = EventDialog(-1, [])
+
 
     def show_task_list(self):
         load_tasks_to_list(0)
