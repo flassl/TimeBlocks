@@ -211,7 +211,7 @@ TimeBlocks:
 
 <EventDialogContent>
     orientation: "vertical"
-    spacing: 20
+    spacing: 40
     size_hint_y: None
     height: 250
     MDTextField:
@@ -221,25 +221,101 @@ TimeBlocks:
         helper_text_mode: "on_error"
         helper_text: "Enter text"
     MDBoxLayout:
-    MDIconButton:
-        id: time_picker_button
         pos_hint: {"center_x": .5, "center_y": .5}
-        icon: "clock-outline"
-        on_release: self.parent.show_time_picker()
+        spacing: 40
+        MDIconButton:
+            id: time_picker_button
+            size_hint_x: 0.5
+            pos_hint: {"center_x": .5, "center_y": .5}
+            icon: "clock-outline"
+            on_release: self.parent.parent.show_time_picker()
+        MDLabel:
+            id: time_label
+            size_hint_x: 3
 
-    MDIconButton:
-        id: date_picker_button
-        pos_hint: {"center_x": .5, "center_y": .5}
-        icon: "calendar-badge"
-        on_release: self.parent.show_date_picker()
+        MDIconButton:
+            id: date_picker_button
+            size_hint_x: 0.5
+            pos_hint: {"center_x": .5, "center_y": .5}
+            icon: "calendar-badge"
+            on_release: self.parent.parent.show_date_picker()
+        MDLabel:
+            id: date_label
+            size_hint_x: 3
+
     AppToggleButton:
         id: repeat_button
         pos_hint: {"center_x": .5, "center_y": .5}
         text: "Repeats"
         group: "repeat_master"
-        on_release: self.parent.show_dropdown()
-    Widget:
+        on_release: self.parent.parent.toggle_dropdown()
+    MDFloatLayout:
+        id: float_layout
+        MDBoxLayout:
+            id: drop_down_box
+            spacing: 5
+            AppToggleButton:
+                id: mon
+                size_hint_x: None
+                width: root.width * 0.125
+                pos_hint: {"center_x": .5, "center_y": .5}
+                text: "M"
+                on_release: self.parent.parent.parent.toggle_weekday(0)
 
+            AppToggleButton:
+                id: tue
+                size_hint_x: 0.1
+                size_hint_x: None
+                width: root.width * 0.125
+                pos_hint: {"center_x": .5, "center_y": .5}
+                text: "T"
+                on_release: self.parent.parent.parent.toggle_weekday(1)
+
+
+            AppToggleButton:
+                id: wed
+                size_hint_x: None
+                width: root.width * 0.125
+                pos_hint: {"center_x": .5, "center_y": .5}
+                text: "W"
+                on_release: self.parent.parent.parent.toggle_weekday(2)
+
+
+            AppToggleButton:
+                id: thu
+                size_hint_x: None
+                width: root.width * 0.125
+                pos_hint: {"center_x": .5, "center_y": .5}
+                text: "T"
+                on_release: self.parent.parent.parent.toggle_weekday(3)
+
+
+            AppToggleButton:
+                id: fri
+                size_hint_x: None
+                width: root.width * 0.125
+                pos_hint: {"center_x": .5, "center_y": .5}
+                text: "F"
+                on_release: self.parent.parent.parent.toggle_weekday(4)
+
+
+            AppToggleButton:
+                id: sat
+                size_hint_x: None
+                width: root.width * 0.125
+                pos_hint: {"center_x": .5, "center_y": .5}
+                text: "S"
+                on_release: self.parent.parent.parent.toggle_weekday(5)
+
+            AppToggleButton:
+                id: sun
+                size_hint_x: None
+                width: root.width * 0.125
+                pos_hint: {"center_x": .5, "center_y": .5}
+                text: "S"
+                on_release: self.parent.parent.parent.toggle_weekday(6)
+
+    Widget:
 
 <CalendarCard>
     on_release: self.go_to_planer()
