@@ -68,12 +68,18 @@ class PlanerDisplay(MDFloatLayout):
             cursor.execute(f"SELECT * FROM {table_name} WHERE task_reference = '{row[2]}'")
             connection.commit()
             task_values = cursor.fetchone()
+            print(task_values)
             # if task_values[4] == 1:
             #   load_checked_task(task_values[5], task_values[6], task_values[7], task_values[2])
             # else:
-            new_task = Task(task_values[0], task_values[1], task_values[3], task_values[4])
-            new_task.ids.content.text = task_values[5]
-            new_task.top = task_values[6]
+            event_data_index_displacement = 0
+            if row[1] == 2:
+                event_data_index_displacement = - 1
+            new_task = Task(task_values[0], task_values[1], task_values[3], task_values[4 + event_data_index_displacement])
+            if row[1] == 2:
+                new_task.active = 1
+            new_task.ids.content.text = task_values[5 + event_data_index_displacement]
+            new_task.top = task_values[6 + event_data_index_displacement]
             new_task.pos = [50, new_task.pos[1]]
             self.active_planer_day.ids.planer_float_layout.add_widget(new_task)
             # planer_task_list.append(new_task)
@@ -83,6 +89,8 @@ class PlanerDisplay(MDFloatLayout):
                 add_to_planer_from_table("ToDoTasks")
             if row[1] == 1:
                 add_to_planer_from_table("RecurrentTasks")
+            if row[1] == 2:
+                add_to_planer_from_table("EventTasks")
 
     def update_screen_values(self, current_screen):
         self.active_planer_screen_name = current_screen.name

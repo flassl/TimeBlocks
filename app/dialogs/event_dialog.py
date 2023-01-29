@@ -1,5 +1,5 @@
 from kivy.animation import Animation
-
+from app.utility.utility import *
 from kivy.graphics import Color, Rectangle
 from kivy.uix.widget import Widget
 
@@ -28,8 +28,9 @@ class EventDialogContent(MDBoxLayout):
     repeating_showing = False
     weekday_toggleable = False
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, dialog, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.dialog = dialog
         Clock.schedule_once(self.set_values, 0.3)
 
     def set_values(self, dt):
@@ -103,10 +104,29 @@ class EventDialogContent(MDBoxLayout):
         if self.weekday_toggleable:
             print(day_index)
 
+    def on_save_task(self, dt):
+        event_date = date(day=self.date_dialog.day, month=self.date_dialog.month, year=self.date_dialog.year)
+        event_time = time(hour=int(self.time_dialog.hour), minute=int(self.time_dialog.minute))
+        event_timestamp = datetime.combine(event_date, event_time)
+        if self.dialog.task_id == -1:
+            save_event(event_timestamp, self.ids.text_field_name.text, calculte_top_from_time(event_time), 1, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
+            save_planer(2, cursor.lastrowid, event_timestamp)
+            print("saved event: " + self.ids.text_field_name.text)
+            pass
+        else:
+            update_event(self.dialog.task_id, event_timestamp, self.ids.text_field_name.text, calculte_top_from_time(event_time), 1, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
+            update_planer(2, self.dialog.task_id, event_timestamp)
+            print("updated event: " + self.ids.text_field_name.text)
+            pass
+        planner_display = MDApp.get_running_app().root.ids.planer_display
+        planner_display.show_tasks(planner_display.displayed_date, 0)
+        self.dialog.dismiss()
+        pass
+
 
 class EventDialog(CustomTaskDialog):
     def __init__(self, task_id, input_data, **kwargs):
-        self.content = EventDialogContent()
+        self.content = EventDialogContent(self)
         super().__init__(
             type="custom",
             content_cls=self.content,
@@ -122,8 +142,7 @@ class EventDialog(CustomTaskDialog):
                     text="SAVE",
                     theme_text_color="Custom",
                     text_color=MDApp.get_running_app().theme_cls.primary_color,
-                    on_release=self.add_task
-
+                    on_release=self.content.on_save_task
               ),
             ],
             **kwargs)
@@ -133,7 +152,4 @@ class EventDialog(CustomTaskDialog):
         Clock.schedule_once(self.fill_input_from_data, 0.1)
 
     def fill_input_from_data(self, dt):
-        pass
-
-    def add_task(self, *args):
         pass

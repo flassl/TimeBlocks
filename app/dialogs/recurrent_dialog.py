@@ -103,6 +103,9 @@ class RecurrentDialog(CustomTaskDialog):
 
             else:
                 update_recurrent(self.task_id, planer_datetime, self.content.ids.text_field_name.text, self.input_data[3], 1, period, unit_str, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
+                print("here")
+                planner_display = MDApp.get_running_app().root.ids.planer_display
+                planner_display.show_tasks(planner_display.displayed_date, 0)
                 print("recurrent task edited: " + self.content.ids.text_field_name.text)
             super(RecurrentDialog, self).update_drawer(1)
             self.dismiss()

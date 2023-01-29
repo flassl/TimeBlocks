@@ -2,6 +2,15 @@ from app.utility.db_utility import *
 from kivy.animation import Animation
 
 item_height = 30
+start_hour = 5
+displayed_hours = 24 - start_hour
+
+
+def calculte_top_from_time(time):
+    hour = time.hour
+    minute = time.minute - time.minute % 15
+    top = (displayed_hours - (hour -  start_hour)) * 4 * item_height - minute / 15 * item_height
+    return top
 
 
 def calculate_snapping_point(planer_scroll_view, touch_pos_y):
@@ -27,7 +36,7 @@ def offset_date_by_months(input_date, offset):
     return offset_date
 
 
-def rotate_Widget(widget, angle):
+def rotate_widget(widget, angle):
     Animation(rotate_value_angle=angle, d=0.3).start(widget)
 
 

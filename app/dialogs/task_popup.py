@@ -25,6 +25,8 @@ class TaskPopup(CustomTaskDialog):
         else:
             print("task updated: " + self.ids.task_text_input.text)
             update_task(self.task_id, datetime.now(), self.ids.task_text_input.text, self.input_data[1], 1)
+            planner_display = MDApp.get_running_app().root.ids.planer_display
+            planner_display.show_tasks(planner_display.displayed_date, 0)
         super(TaskPopup, self).update_drawer(0)
         self.dismiss()
 

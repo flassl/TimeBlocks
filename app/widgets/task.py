@@ -67,7 +67,7 @@ class Task(MDCard):
         if self.task_type == 2:
             fab.children[0].icon = "plus"
         else:
-            rotate_Widget(fab, 0)
+            rotate_widget(fab, 0)
 
         if self.dragging:
             if fab.collide_point(*touch.pos):
@@ -144,7 +144,7 @@ class Task(MDCard):
         if self.task_type == 2:
             fab.children[0].icon = "delete-outline"
         else:
-            rotate_Widget(fab, 45)
+            rotate_widget(fab, 45)
 
         def recreate_in_root():
             self.deleted = False

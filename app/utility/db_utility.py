@@ -192,6 +192,22 @@ def remove_planer(ID, task_type):
     connection.commit()
 
 
+def update_planer(task_type, task_id, planed_date):
+    if isinstance(planed_date, date):
+        planed_date = datetime.combine(planed_date, time(0, 0)).timestamp()
+    if isinstance(planed_date, datetime):
+        planed_date = planed_date.timestamp()
+    cursor.execute(
+        f"UPDATE PlanerTasks "
+        f"SET "
+        f"planed_date_timestamp = '{planed_date}' "
+        f"WHERE "
+        f"task_reference = '{task_id}' "
+        f"AND "
+        f"task_type = '{task_type}'")
+    connection.commit()
+
+
 def get_list_tasks():
     cursor.execute("SELECT * FROM ToDoTasks WHERE active = '0' AND done = '0'")
     tasks = cursor.fetchall()
@@ -369,3 +385,25 @@ def remove_recurrent(ID):
     connection.commit()
 
 
+def save_event(event_timestamp, text, top_distance, duration, color, font_color):
+    cursor.execute(
+        f"INSERT INTO EventTasks VALUES(NULL, '2', '{event_timestamp}', '0',"
+        f" '{text}', '{top_distance}', '{duration}', '{color}', '{font_color}')")
+    connection.commit()
+
+
+def update_event(ID, date_update, text, top_distance, duration, color, font_color):
+    if isinstance(date_update, datetime):
+        date_update = date_update.timestamp()
+    cursor.execute(
+        f"UPDATE EventTasks "
+        f"SET "
+        f"text = '{text}', "
+        f"top = '{top_distance}', "
+        f"date_timestamp = '{date_update}', "
+        f"color = '{color}', "
+        f"font_color = '{font_color}', "
+        f"duration = '{duration}' "
+        f"WHERE "
+        f"task_reference = '{ID}'")
+    connection.commit()

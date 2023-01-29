@@ -5,6 +5,7 @@ from app.dialogs.event_dialog import *
 from app.displays.calendar_display import *
 from app.templates.planer_day import *
 from app.templates.navigation_drawer_content import *
+from app.utility.utility import *
 from app.displays.planer_display import *
 from kivy.core.window import Window
 from kivy.metrics import dp
@@ -22,10 +23,6 @@ from kivymd.uix.label import MDLabel
 from datetime import datetime, timedelta, date
 from functools import partial
 
-
-item_height = 30
-start_hour = 5
-displayed_hours = 24 - start_hour
 font_size = window_width//30
 
 fab_icons = {"task": "text-short", "recurrent": "cached", "event": "calendar"}
