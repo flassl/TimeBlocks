@@ -9,7 +9,7 @@ displayed_hours = 24 - start_hour
 def calculte_top_from_time(time):
     hour = time.hour
     minute = time.minute - time.minute % 15
-    top = (displayed_hours - (hour -  start_hour)) * 4 * item_height - minute / 15 * item_height
+    top = (displayed_hours - (hour - start_hour)) * 4 * item_height - minute / 15 * item_height
     return top
 
 

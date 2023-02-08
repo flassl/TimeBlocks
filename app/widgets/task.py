@@ -13,6 +13,8 @@ from kivy.clock import Clock
 from .positioning_hint import *
 import math
 
+from ..dialogs.event_dialog import EventDialog
+
 
 class Task(MDCard):
     def __init__(self, id, task_type, active, done, **kwargs):
@@ -288,6 +290,8 @@ class Task(MDCard):
             task = get_task(self.task_id, self.task_type)
             print(self.task_id, self.task_type, task)
             dialog = RecurrentDialog(self.task_id, [task[5], task[8], task[9], task[6]])
+        if self.task_type == 2:
+            dialog = EventDialog(self)
 
 
 class TaskMenu(MDBoxLayout):

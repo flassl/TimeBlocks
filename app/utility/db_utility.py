@@ -161,6 +161,8 @@ def get_task(id, task_type):
         db_name = "ToDoTasks"
     if task_type == 1:
         db_name = "RecurrentTasks"
+    if task_type == 2:
+        db_name = "EventTasks"
     cursor.execute(
         f"SELECT * FROM {db_name} "
         f"WHERE "

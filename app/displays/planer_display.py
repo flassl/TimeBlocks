@@ -146,7 +146,7 @@ class PlanerDisplay(MDFloatLayout):
 
         elif pressed_icon == fab_icons.get("event"):
             fab.close_stack()
-            self.dialog = EventDialog(-1, [])
+            self.dialog = EventDialog(None)
 
 
     def show_task_list(self):

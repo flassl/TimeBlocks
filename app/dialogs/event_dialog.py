@@ -27,6 +27,11 @@ class EventDialogContent(MDBoxLayout):
     repeat_button_pos = None
     repeating_showing = False
     weekday_toggleable = False
+    hour = None
+    minute = None
+    day = None
+    month = None
+    year = None
 
     def __init__(self, dialog, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -53,13 +58,29 @@ class EventDialogContent(MDBoxLayout):
         self.drop_down_box.pos = self.repeat_button_pos
         self.drop_down_box.pos_hint = {"center_x": .5}
 
+    def fill_values(self, text, hour, minute, day, month, year):
+        self.ids.text_field_name.text = text
+        self.hour = hour
+        self.minute = minute
+        self.day = day
+        self.month = month
+        self.year = year
+        self.update_time_display()
+        self.update_date_display()
+
     def show_date_picker(self):
         self.date_dialog = MDDatePicker()
         self.date_dialog.bind(on_save=self.on_save_date_picker, on_cancel=self.on_cancel_date_picker)
         self.date_dialog.open()
 
     def on_save_date_picker(self, *args):
-        self.ids.date_label.text = str(self.date_dialog.day) + "/" + "%02d" % (self.date_dialog.month) + "/" + str(self.date_dialog.year)[2:4]
+        self.day = self.date_dialog.day
+        self.month = self.date_dialog.month
+        self.year = self.date_dialog.year
+        self.update_date_display()
+
+    def update_date_display(self):
+        self.ids.date_label.text = str(self.day) + "/" + "%02d" % (self.month) + "/" + str(self.year)[2:4]
 
     def on_cancel_date_picker(self, *args):
         pass
@@ -78,8 +99,12 @@ class EventDialogContent(MDBoxLayout):
         self.time_dialog.open()
 
     def on_save_time_picker(self, *args):
-        self.ids.time_label.text = self.time_dialog.hour + ":" + "%02d" % (int(self.time_dialog.minute),)
-        pass
+        self.hour = self.time_dialog.hour
+        self.minute = self.time_dialog.minute
+        self.update_time_display()
+
+    def update_time_display(self):
+        self.ids.time_label.text = str(self.hour) + ":" + str("%02d" % (int(self.minute),))
 
     def on_cancel_time_picker(self, *args):
         pass
@@ -105,9 +130,9 @@ class EventDialogContent(MDBoxLayout):
             print(day_index)
 
     def on_save_task(self, dt):
-        event_date = date(day=self.date_dialog.day, month=self.date_dialog.month, year=self.date_dialog.year)
-        event_time = time(hour=int(self.time_dialog.hour), minute=int(self.time_dialog.minute))
-        event_timestamp = datetime.combine(event_date, event_time)
+        event_date = date(day=self.day, month=self.month, year=self.year)
+        event_time = time(hour=int(self.hour), minute=int(self.minute))
+        event_timestamp = datetime.combine(event_date, event_time).timestamp()
         if self.dialog.task_id == -1:
             save_event(event_timestamp, self.ids.text_field_name.text, calculte_top_from_time(event_time), 1, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
             save_planer(2, cursor.lastrowid, event_timestamp)
@@ -125,7 +150,7 @@ class EventDialogContent(MDBoxLayout):
 
 
 class EventDialog(CustomTaskDialog):
-    def __init__(self, task_id, input_data, **kwargs):
+    def __init__(self, task_widget, **kwargs):
         self.content = EventDialogContent(self)
         super().__init__(
             type="custom",
@@ -146,10 +171,22 @@ class EventDialog(CustomTaskDialog):
               ),
             ],
             **kwargs)
-        self.task_id = task_id
-        self.input_data = input_data
         self.open()
-        Clock.schedule_once(self.fill_input_from_data, 0.1)
+        if task_widget != None:
+            self.task = task_widget
+            self.task_id = task_widget.task_id
+            self.task_type = task_widget.task_type
+            Clock.schedule_once(self.fill_input_from_data, 0.1)
+        else:
+            self.task_id = -1
 
     def fill_input_from_data(self, dt):
+        task = get_task(self.task_id, self.task_type)
+        task_date = datetime.fromtimestamp(int(task[2]))
+        hour = task_date.hour
+        minute = task_date.minute
+        day = task_date.day
+        month = task_date.month
+        year = task_date.year
+        self.content.fill_values(task[4], hour, minute, day, month, year)
         pass
