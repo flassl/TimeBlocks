@@ -1,0 +1,23 @@
+MVP:
+    - Bars show in Calendar as chip for each task
+    - input checking in dialogues
+    - Tasks can not cover one another nor get dropped on top og each other
+    - On_Deployment: the database does not get overwritten after updating app
+    - Dragging- / Stretching & Scroll functionality
+    - Time Wall
+
+Debug:
+    - Weak reference crash on switching screens in planner and calendar
+    - Task respawns in other position after dragging starts
+    - Touch up does not come through in navigation drawer
+     -> fast/ double-clicking on task list
+    - Weired backspin of fab when opening (because of task animation?)
+
+Details:
+    - Task positioning hint disappears when hovering with a dragged task over the FAB
+
+Luxury:
+    - Add checkable milestones to tasks
+    - implement repeat functionality in events
+
+

@@ -84,16 +84,19 @@ TimeBlocks:
         root_button_anim: True
 
     MDIconButton:
+        id: list_button_task
         icon: "text-short"
         pos_hint: {"center_x": .92, "center_y": .8}
         on_release: self.parent.show_task_list()
 
     MDIconButton:
+        id: list_button_recurrent
         icon: "cached"
         pos_hint: {"center_x": .92, "center_y": .7}
         on_release: self.parent.show_recurrent_list()
 
     MDIconButton:
+        id: list_button_event
         icon: "calendar"
         pos_hint: {"center_x": .92, "center_y": .6}
         on_release: self.parent.show_calendar()

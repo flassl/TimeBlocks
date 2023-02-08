@@ -214,8 +214,20 @@ class Task(MDCard):
             if not self.options_showing:
                 self.ids.check_layout.add_widget(self.delete_button)
 
+        def hide_list_menu():
+            planer_display = MDApp.get_running_app().root.ids.planer_display
+            button_task = planer_display.ids.list_button_task
+            button_recurrent = planer_display.ids.list_button_recurrent
+            button_event = planer_display.ids.list_button_event
+
+            animation = Animation(pos_hint={"center_x": 1.2}, duration=0.3, transition="in_cubic")
+            animation.start(button_task)
+            animation.start(button_recurrent)
+            animation.start(button_event)
+
         # ToDo: fade in animation
 
+        hide_list_menu()
         show_menu()
         if self.active == 1:
             if not self.done:
@@ -241,8 +253,20 @@ class Task(MDCard):
             if self.check_button.parent and self.check_button:
                 self.check_button.parent.remove_widget(self.check_button)
 
+        def show_list_menu():
+            planer_display = MDApp.get_running_app().root.ids.planer_display
+            button_task = planer_display.ids.list_button_task
+            button_recurrent = planer_display.ids.list_button_recurrent
+            button_event = planer_display.ids.list_button_event
+
+            animation = Animation(pos_hint={"center_x": 0.92}, duration=0.3, transition="in_cubic")
+            animation.start(button_task)
+            animation.start(button_recurrent)
+            animation.start(button_event)
+
         self.options_showing = False
 
+        show_list_menu()
         hide_menu()
         if self.active == 1:
             if not self.done:
