@@ -327,8 +327,21 @@ TimeBlocks:
         Label:
             id: header
             text: "demo"
-        StackLayout:
+        MDStackLayout:
             id: list
+            spacing: 2
+        Widget:
+<CalendarDayItem>
+    size_hint: (1, None)
+    height: 8
+    canvas:
+        Color:
+            rgb: app.theme_cls.primary_dark
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [5]
+
 
 <CalendarMonth>
     md_bg_color: app.theme_cls.bg_dark

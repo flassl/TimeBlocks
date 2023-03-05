@@ -409,3 +409,14 @@ def update_event(ID, date_update, text, top_distance, duration, color, font_colo
         f"WHERE "
         f"task_reference = '{ID}'")
     connection.commit()
+
+
+def get_task_amount_for_date(date):
+    date_start_timestamp = datetime.combine(date, time(0, 0, 0)).timestamp()
+    date_end = datetime.combine(date, time(0, 0, 0)) + timedelta(hours=23, minutes=59, seconds=59)
+    date_end_timestamp = date_end.timestamp()
+    cursor.execute(f"SELECT Count(*) FROM PlanerTasks WHERE planed_date_timestamp BETWEEN '{date_start_timestamp}' AND "
+                   f"'{date_end_timestamp}'")
+    planer_tasks_db = cursor.fetchone()
+    connection.commit()
+    return planer_tasks_db

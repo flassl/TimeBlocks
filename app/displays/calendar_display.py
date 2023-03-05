@@ -26,6 +26,7 @@ class CalendarDisplay(MDFloatLayout):
         self.active_calendar_screen_name = self.screen_manager.current
         self.active_calendar_month = self.screen_manager.get_screen(self.active_calendar_screen_name).children[0]
 
+
     def fill_month(self, day_in_month, dt):
 
         days_in_month = calendar.monthrange(day_in_month.year, day_in_month.month)[1]
