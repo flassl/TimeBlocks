@@ -75,9 +75,7 @@ class PlanerDisplay(MDFloatLayout):
             event_data_index_displacement = 0
             if row[1] == 2:
                 event_data_index_displacement = - 1
-            new_task = Task(task_values[0], task_values[1], task_values[3], task_values[4 + event_data_index_displacement])
-            if row[1] == 2:
-                new_task.active = 1
+            new_task = Task(task_values[0], task_values[1], 1, task_values[4 + event_data_index_displacement])
             new_task.ids.content.text = task_values[5 + event_data_index_displacement]
             new_task.top = task_values[6 + event_data_index_displacement]
             new_task.pos = [50, new_task.pos[1]]

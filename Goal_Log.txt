@@ -1,4 +1,6 @@
 MVP:
+    - events show in planer
+    - calendar shows other months too
     - input checking in dialogues
     - Tasks can not cover one another nor get dropped on top og each other
     - On_Deployment: the database does not get overwritten after updating app

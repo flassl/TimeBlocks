@@ -32,6 +32,7 @@ class EventDialogContent(MDBoxLayout):
     day = None
     month = None
     year = None
+    pm = False
 
     def __init__(self, dialog, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -99,9 +100,15 @@ class EventDialogContent(MDBoxLayout):
         self.time_dialog.open()
 
     def on_save_time_picker(self, *args):
-        self.hour = self.time_dialog.hour
+
+        self.hour = int(self.time_dialog.hour)
         self.minute = self.time_dialog.minute
         self.update_time_display()
+        if self.time_dialog.am_pm == "pm":
+            self.pm = True
+            self.hour += 12
+        else:
+            self.pm = False
 
     def update_time_display(self):
         self.ids.time_label.text = str(self.hour) + ":" + str("%02d" % (int(self.minute),))
