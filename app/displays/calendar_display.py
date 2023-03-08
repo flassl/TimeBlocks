@@ -26,7 +26,6 @@ class CalendarDisplay(MDFloatLayout):
         self.active_calendar_screen_name = self.screen_manager.current
         self.active_calendar_month = self.screen_manager.get_screen(self.active_calendar_screen_name).children[0]
 
-
     def fill_month(self, day_in_month, dt):
 
         days_in_month = calendar.monthrange(day_in_month.year, day_in_month.month)[1]
@@ -78,8 +77,7 @@ class CalendarDisplay(MDFloatLayout):
         self.update_screen_values(other_screen)
         self.displayed_date_in_month = date_in_month
         self.update_header_label()
-        if self.displayed_date_in_month != date_in_month:
-            self.fill_month(date_in_month, 0)
+        self.fill_month(date_in_month, 0)
         return other_screen
 
     def show_previous(self):
