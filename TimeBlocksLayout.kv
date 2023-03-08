@@ -111,6 +111,8 @@ TimeBlocks:
             hint_text: "Enter the Task to add"
             multiline: False
             on_text_validate: self.parent.parent.add_task()
+            helper_text: "Name must contain at least one character"
+            helper_text_mode: "on_error"
 
 <NavigationDrawerContent>
     MDBoxLayout:
@@ -178,9 +180,10 @@ TimeBlocks:
     MDTextField:
         id: text_field_name
         hint_text: "Enter the Recurrent task to add"
+        on_text_validate: self.parent.parent.parent.parent.add_task()
         multiline: False
+        helper_text: "Name must contain at least one character"
         helper_text_mode: "on_error"
-        helper_text: "Enter text"
     MDBoxLayout:
         MDLabel:
             id: recur_label
@@ -188,8 +191,8 @@ TimeBlocks:
         MDTextField:
             id: text_field_number
             hint_text: "amount"
+            helper_text: "Enter at least one digit"
             helper_text_mode: "on_error"
-            helper_text: "Enter text"
 
     MDBoxLayout:
         adaptive_width: True
@@ -221,8 +224,8 @@ TimeBlocks:
         id: text_field_name
         hint_text: "Enter the Event's name"
         multiline: False
+        helper_text: "Name must contain at least one character"
         helper_text_mode: "on_error"
-        helper_text: "Enter text"
     MDBoxLayout:
         pos_hint: {"center_x": .5, "center_y": .5}
         spacing: 40

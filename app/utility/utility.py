@@ -40,3 +40,18 @@ def rotate_widget(widget, angle):
     Animation(rotate_value_angle=angle, d=0.3).start(widget)
 
 
+def got_filled(input):
+    if input.text == "":
+        input.error = True
+        return False
+    else:
+        return True
+
+
+def is_digit(input):
+    if input.text.isdigit():
+        return True
+    else:
+        input.error = True
+        return False
+

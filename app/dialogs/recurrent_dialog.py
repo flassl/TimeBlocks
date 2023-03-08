@@ -8,6 +8,7 @@ from kivymd.uix.snackbar import Snackbar
 from .custom_task_dialog import *
 from kivy.clock import Clock
 from app.utility.db_utility import *
+from app.utility.utility import *
 from .custom_task_dialog import CustomTaskDialog
 
 content = None
@@ -75,13 +76,13 @@ class RecurrentDialog(CustomTaskDialog):
         period= None
         unit_str = None
 
-        if text_field_name:
+        if got_filled(text_field_name):
             text = text_field_name.text
             test_boolean = True
         else:
             text_field_name.error = True
 
-        if text_field_number:
+        if is_digit(text_field_number):
             period = text_field_number.text
         else:
             text_field_number.error = True

@@ -137,22 +137,29 @@ class EventDialogContent(MDBoxLayout):
             print(day_index)
 
     def on_save_task(self, dt):
-        event_date = date(day=self.day, month=self.month, year=self.year)
-        event_time = time(hour=int(self.hour), minute=int(self.minute))
-        event_timestamp = datetime.combine(event_date, event_time).timestamp()
-        if self.dialog.task_id == -1:
-            save_event(event_timestamp, self.ids.text_field_name.text, calculte_top_from_time(event_time), 1, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
-            save_planer(2, cursor.lastrowid, event_timestamp)
-            print("saved event: " + self.ids.text_field_name.text)
-            pass
-        else:
-            update_event(self.dialog.task_id, event_timestamp, self.ids.text_field_name.text, calculte_top_from_time(event_time), 1, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
-            update_planer(2, self.dialog.task_id, event_timestamp)
-            print("updated event: " + self.ids.text_field_name.text)
-            pass
-        planner_display = MDApp.get_running_app().root.ids.planer_display
-        planner_display.show_tasks(planner_display.displayed_date, 0)
-        self.dialog.dismiss()
+        input_text_name = self.ids.text_field_name
+        if got_filled(input_text_name):
+            if self.day != None and self.hour != None:
+                event_date = date(day=self.day, month=self.month, year=self.year)
+                event_time = time(hour=int(self.hour), minute=int(self.minute))
+                event_timestamp = datetime.combine(event_date, event_time).timestamp()
+                if self.dialog.task_id == -1:
+                    save_event(event_timestamp, input_text_name.text, calculte_top_from_time(event_time), 1, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
+                    save_planer(2, cursor.lastrowid, event_timestamp)
+                    print("saved event: " + self.ids.text_field_name.text)
+                    pass
+                else:
+                    update_event(self.dialog.task_id, event_timestamp, input_text_name.text, calculte_top_from_time(event_time), 1, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
+                    update_planer(2, self.dialog.task_id, event_timestamp)
+                    print("updated event: " + input_text_name.text)
+                    pass
+                planner_display = MDApp.get_running_app().root.ids.planer_display
+                planner_display.show_tasks(planner_display.displayed_date, 0)
+                self.dialog.dismiss()
+            else:
+                #TODO: shake items to show that they need to be filled
+                pass
+
         pass
 
 

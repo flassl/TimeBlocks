@@ -1,6 +1,7 @@
 from kivymd.uix.dialog import MDDialog
 from kivy.clock import Clock
 from app.utility.db_utility import *
+from app.utility.utility import *
 from .custom_task_dialog import *
 
 
@@ -19,16 +20,18 @@ class TaskPopup(CustomTaskDialog):
             self.ids.task_text_input.text = self.input_data[0]
 
     def add_task(self):
-        if self.task_id == -1:
-            print("task added: " + self.ids.task_text_input.text)
-            save_task(0, datetime.now(), 0, 0, self.ids.task_text_input.text, 0, 1)
-        else:
-            print("task updated: " + self.ids.task_text_input.text)
-            update_task(self.task_id, datetime.now(), self.ids.task_text_input.text, self.input_data[1], 1)
-            planner_display = MDApp.get_running_app().root.ids.planer_display
-            planner_display.show_tasks(planner_display.displayed_date, 0)
-        super(TaskPopup, self).update_drawer(0)
-        self.dismiss()
+        text_input_field = self.ids.task_text_input
+        if got_filled(text_input_field):
+            if self.task_id == -1 :
+                print("task added: " + text_input_field.text)
+                save_task(0, datetime.now(), 0, 0, text_input_field.text, 0, 1)
+            else:
+                print("task updated: " + text_input_field.text)
+                update_task(self.task_id, datetime.now(), text_input_field.text, self.input_data[1], 1)
+                planner_display = MDApp.get_running_app().root.ids.planer_display
+                planner_display.show_tasks(planner_display.displayed_date, 0)
+            super(TaskPopup, self).update_drawer(0)
+            self.dismiss()
 
 
     def _set_focus(self, dt):
