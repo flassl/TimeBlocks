@@ -95,22 +95,23 @@ class PlanerDisplay(MDFloatLayout):
 
         if planer_date == date.today():
             self.create_time_wall()
+            Clock.schedule_once(self.smooth_scroll_to_time, 0.8)
 
     def create_time_wall(self):
-        if self.time_wall and self.time_wall.parent:
-            self.time_wall.parent.remove_widget(self.time_wall)
-        self.time_wall = TimeWall()
-        self.active_planer_day.ids.planer_float_layout.add_widget(self.time_wall)
-        self.update_time_wall(0)
-        def smooth_scroll_to_time(dt):
-            current_time = datetime.now()
-            current_hour = current_time.hour - 5
-            current_minute = current_time.minute
-            day_progress = 1 - ((current_hour * 4 + current_minute / 15) / (displayed_hours * 4))
+        if self.displayed_date == date.today():
+            if self.time_wall and self.time_wall.parent:
+                self.time_wall.parent.remove_widget(self.time_wall)
+            self.time_wall = TimeWall()
+            self.active_planer_day.ids.planer_float_layout.add_widget(self.time_wall)
+            self.update_time_wall(0)
 
-            scroll_animation = Animation(scroll_y=day_progress, duration=0.8, transition="out_back")
-            scroll_animation.start(self.active_planer_day)
-        Clock.schedule_once(smooth_scroll_to_time, 0.8)
+    def smooth_scroll_to_time(self, dt):
+        current_time = datetime.now()
+        current_hour = current_time.hour - 5
+        current_minute = current_time.minute
+        day_progress = 1 - ((current_hour * 4 + current_minute / 15) / (displayed_hours * 4))
+        scroll_animation = Animation(scroll_y=day_progress, duration=0.8, transition="out_back")
+        scroll_animation.start(self.active_planer_day)
 
     def update_time_wall(self, dt):
         if self.time_wall:

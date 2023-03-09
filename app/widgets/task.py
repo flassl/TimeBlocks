@@ -1,5 +1,6 @@
 from app.dialogs.task_popup import *
 from app.dialogs.recurrent_dialog import *
+from kivy.core.window import Window
 from app.utility.db_utility import *
 from kivy.animation import Animation
 from kivy.utils import rgba
@@ -50,6 +51,9 @@ class Task(MDCard):
     expand_button = None
     edit_button = None
 
+    scroll_handler = None
+    scroll_factor = 0
+
     active_planer_day = None
 
     def on_touch_down(self, touch):
@@ -84,6 +88,8 @@ class Task(MDCard):
                 self.positioning_hint.parent.remove_widget(self.positioning_hint)
                 self.parent.remove_widget(self)
                 remove_planer(self.task_id, self.task_type)
+                fab.size = (fab.size[0] -10, fab.size[1] -10)
+                fab.pos = (fab.pos[0] + 10 / 2, fab.pos[1] + 10 / 2)
 
 
         def recreate_in_planer():
@@ -106,8 +112,11 @@ class Task(MDCard):
             if self.task_type == 1:
                 de_activate_recurrent(self.task_id, 1, 0, self.top, current_planer_date)
             self.active = 1
+            MDApp.get_running_app().root.ids.planer_display.create_time_wall()
+            self.opacity = 1
 
         self.dragging = False
+        Clock.unschedule(self.scroll_handler)
         return super().on_touch_up(touch)
 
     def on_touch_move(self, touch, *args):
@@ -118,6 +127,17 @@ class Task(MDCard):
         def scale_fab(delta):
             fab.size = (fab.size[0] + delta, fab.size[1] + delta)
             fab.pos = (fab.pos[0] - delta / 2, fab.pos[1] - delta / 2)
+
+        def set_scroll_factor():
+            max_height = Window.size[1]
+            if touch.pos[1] < max_height / 5:
+                speed = (1 - (touch.pos[1] / (max_height / 5)))
+                self.scroll_factor = - 0.01 * speed
+            elif touch.pos[1] > max_height * 0.75:
+                speed = ((touch.pos[1] - max_height * 0.75) / (max_height * 0.25))
+                self.scroll_factor = 0.01 * speed
+            else:
+                self.scroll_factor = 0
 
         if self.dragging:
             if fab.collide_point(*touch.pos):
@@ -131,6 +151,8 @@ class Task(MDCard):
                     self.fab_is_deleting = False
                     fab.children[0].size_hint = (None, None)
                     scale_fab(-10)
+
+            set_scroll_factor()
 
         return super().on_touch_move(touch, *args)
 
@@ -155,6 +177,7 @@ class Task(MDCard):
             root_parent.add_widget(temp)
             self.elevation = 4
             self.follow_touch(0)
+            self.opacity = 0.5
 
         def show_positioning_hint():
             self.positioning_hint = PositioningHint()
@@ -169,6 +192,16 @@ class Task(MDCard):
         if self.options_showing:
             print("options showing")
             self.hide_options(0)
+
+        self.scroll_handler = Clock.schedule_interval(self.handle_scroll, 0.03)
+        print(self.scroll_handler)
+
+    def handle_scroll(self, dt):
+        if not self.active_planer_day:
+            screen_manager = MDApp.get_running_app().root.ids.planer_display.screen_manager
+            active_planer_screen_name = screen_manager.current
+            self.active_planer_day = screen_manager.get_screen(active_planer_screen_name).children[0]
+        self.active_planer_day.scroll_y += self.scroll_factor
 
     def follow_touch(self, dt):
         if self.current_touch_position:
@@ -324,6 +357,7 @@ class TaskMenu(MDBoxLayout):
     start_pos = None
     start_height = None
     parent_task = None
+    scroll_factor = 0
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -360,10 +394,24 @@ class TaskMenu(MDBoxLayout):
                 self.parent_task.pos[1] = self.start_pos - delta_blocks * item_height
                 self.parent_task.size[1] = self.start_height + delta_blocks * item_height
 
+        def set_scroll_factor():
+            max_height = Window.size[1]
+            if touch.pos[1] < max_height / 5:
+                speed = (1 - (touch.pos[1] / (max_height / 5)))
+                self.scroll_factor = - 0.01 * speed
+            elif touch.pos[1] > max_height * 0.75:
+                speed = ((touch.pos[1] - max_height * 0.75) / (max_height * 0.25))
+                self.scroll_factor = 0.01 * speed
+            else:
+                self.scroll_factor = 0
+        set_scroll_factor()
         return super().on_touch_move(touch)
 
 
 class ExpandButton(MDIconButton):
+
+    scroll_handler = None
+    active_planer_day = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(
@@ -378,12 +426,23 @@ class ExpandButton(MDIconButton):
         if self.collide_point(*touch.pos):
             self.md_bg_color = MDApp.get_running_app().theme_cls.primary_color
             self.parent.start_expansion(touch)
+
+        if not self.active_planer_day:
+            screen_manager = MDApp.get_running_app().root.ids.planer_display.screen_manager
+            active_planer_screen_name = screen_manager.current
+            self.active_planer_day = screen_manager.get_screen(active_planer_screen_name).children[0]
+        self.scroll_handler = Clock.schedule_interval(self.handle_scroll, 0.03)
         return super().on_touch_down(touch)
 
     def on_touch_up(self, touch):
         self.parent.end_expansion()
         self.md_bg_color = [0, 0, 0, 0]
+        Clock.unschedule(self.scroll_handler)
         return super().on_touch_up(touch)
+
+    def handle_scroll(self, dt):
+        self.active_planer_day.scroll_y += self.parent.scroll_factor
+        pass
 
 
 class EditButton(MDIconButton):
