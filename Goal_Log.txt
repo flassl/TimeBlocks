@@ -1,9 +1,7 @@
 MVP:
-    - input checking in dialogues
     - Tasks can not cover one another nor get dropped on top og each other
     - On_Deployment: the database does not get overwritten after updating app
     - Dragging- / Stretching & Scroll functionality
-    - Time Wall
 
 Debug:
     - Weak reference crash on switching screens in planner and calendar

@@ -428,3 +428,24 @@ TimeBlocks:
         icon: "notebook-outline"
         pos_hint: {"center_x": .92, "center_y": .05}
         on_release: self.parent.back_to_planer()
+
+<TimeWall>
+    orientation: "vertical"
+    Widget:
+        canvas:
+            Color:
+                rgba: [0.2, 0.2, 0.2, 0.5]
+            Rectangle:
+                pos: (50, self.pos[1])
+                size: (self.width, 3000)
+    Widget:
+        pos_x: 30
+        size_hint: (1, None)
+        size: (self.width, 3)
+        canvas:
+            Color:
+                rgb: app.theme_cls.primary_dark
+            RoundedRectangle:
+                pos: (50, self.pos[1])
+                size: self.size
+                radius: [5]

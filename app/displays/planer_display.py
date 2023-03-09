@@ -1,4 +1,5 @@
 from main import *
+from app.widgets.time_wall import *
 
 
 class PlanerDisplay(MDFloatLayout):
@@ -7,6 +8,7 @@ class PlanerDisplay(MDFloatLayout):
     screen_manager = None
     active_planer_screen_name = None
     active_planer_day = None
+    time_wall = None
 
     def __init__(self, **kwargs):
         super(PlanerDisplay, self).__init__(**kwargs)
@@ -14,6 +16,7 @@ class PlanerDisplay(MDFloatLayout):
         Clock.schedule_once(self._set_variables, 0.1)
         Clock.schedule_once(self._add_labels, 0.1)
         Clock.schedule_once(partial(self.show_tasks, date.today()), 0.1)
+        Clock.schedule_interval(self.update_time_wall, 60)
 
     def _set_variables(self, dt):
         self.screen_manager = self.ids.screen_manager
@@ -90,6 +93,30 @@ class PlanerDisplay(MDFloatLayout):
             if row[1] == 2:
                 add_to_planer_from_table("EventTasks")
 
+        if planer_date == date.today():
+            self.create_time_wall()
+
+    def create_time_wall(self):
+        if self.time_wall and self.time_wall.parent:
+            self.time_wall.parent.remove_widget(self.time_wall)
+        self.time_wall = TimeWall()
+        self.active_planer_day.ids.planer_float_layout.add_widget(self.time_wall)
+        self.update_time_wall(0)
+        def smooth_scroll_to_time(dt):
+            current_time = datetime.now()
+            current_hour = current_time.hour - 5
+            current_minute = current_time.minute
+            day_progress = 1 - ((current_hour * 4 + current_minute / 15) / (displayed_hours * 4))
+
+            scroll_animation = Animation(scroll_y=day_progress, duration=0.8, transition="out_back")
+            scroll_animation.start(self.active_planer_day)
+        Clock.schedule_once(smooth_scroll_to_time, 0.8)
+
+    def update_time_wall(self, dt):
+        if self.time_wall:
+            current_time = datetime.now()
+            self.time_wall.pos[1] = calculte_top_from_time(current_time)
+
     def update_screen_values(self, current_screen):
         self.active_planer_screen_name = current_screen.name
         self.active_planer_day = current_screen.children[0]
@@ -145,7 +172,6 @@ class PlanerDisplay(MDFloatLayout):
         elif pressed_icon == fab_icons.get("event"):
             fab.close_stack()
             self.dialog = EventDialog(None)
-
 
     def show_task_list(self):
         load_tasks_to_list(0)
