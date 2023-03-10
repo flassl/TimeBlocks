@@ -13,6 +13,13 @@ def calculte_top_from_time(time):
     return top
 
 
+def calculate_true_top_from_time(time):
+    hour = time.hour
+    minute = time.minute
+    top = (displayed_hours - (hour - start_hour)) * 4 * item_height - minute / 15 * item_height
+    return top
+
+
 def calculate_snapping_point(planer_scroll_view, touch_pos_y):
     top = planer_scroll_view.to_local(50, touch_pos_y)[1]
     difference = top % item_height

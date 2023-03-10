@@ -358,6 +358,7 @@ class TaskMenu(MDBoxLayout):
     start_height = None
     parent_task = None
     scroll_factor = 0
+    new_height_in_blocks = 0
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -381,6 +382,8 @@ class TaskMenu(MDBoxLayout):
             if self.parent_task.stretching:
                 self.parent_task.stretching = False
                 self.parent_task.options_showing = False
+                self.new_height_in_blocks = self.parent_task.size[1]/30
+                update_task_duration(self.parent.parent.task_id, self.new_height_in_blocks)
                 self.parent_task.hide_options(0)
                 self.stretch_start_y = None
                 self.start_pos = None

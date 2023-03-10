@@ -56,8 +56,6 @@ class PlanerDisplay(MDFloatLayout):
     def show_tasks(self, planer_date, dt):
         self.displayed_date = planer_date
         self.ids.date_text.text = planer_date.strftime("%A, %d/%m/%Y")
-        app = MDApp.get_running_app()
-        root = app.root
         date_start_timestamp = datetime.combine(planer_date, time(0, 0, 0)).timestamp()
         date_end = datetime.combine(planer_date, time(0, 0, 0)) + timedelta(hours=23, minutes=59, seconds=59)
         date_end_timestamp = date_end.timestamp()
@@ -79,6 +77,8 @@ class PlanerDisplay(MDFloatLayout):
             if row[1] == 2:
                 event_data_index_displacement = - 1
             new_task = Task(task_values[0], task_values[1], 1, task_values[4 + event_data_index_displacement])
+            height = task_values[7 + event_data_index_displacement] * 30
+            new_task.size = (new_task.size[0], height)
             new_task.ids.content.text = task_values[5 + event_data_index_displacement]
             new_task.top = task_values[6 + event_data_index_displacement]
             new_task.pos = [50, new_task.pos[1]]
@@ -116,7 +116,7 @@ class PlanerDisplay(MDFloatLayout):
     def update_time_wall(self, dt):
         if self.time_wall:
             current_time = datetime.now()
-            self.time_wall.pos[1] = calculte_top_from_time(current_time)
+            self.time_wall.pos[1] = calculate_true_top_from_time(current_time)
 
     def update_screen_values(self, current_screen):
         self.active_planer_screen_name = current_screen.name

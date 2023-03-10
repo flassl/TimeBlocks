@@ -136,6 +136,16 @@ def update_task(ID, date_update, text, top, duration):
     connection.commit()
 
 
+def update_task_duration(ID, duration):
+    cursor.execute(
+        f"UPDATE ToDoTasks "
+        f"SET "
+        f"duration = '{duration}' "
+        f"WHERE "
+        f"task_reference = '{ID}'")
+    connection.commit()
+
+
 def de_activate_to_do(ID, active, done, new_top):
     cursor.execute(
         f"UPDATE ToDoTasks "

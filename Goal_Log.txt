@@ -1,10 +1,10 @@
 MVP:
     - Tasks can not cover one another nor get dropped on top og each other
     - On_Deployment: the database does not get overwritten after updating app
-    - implement Recurring task functionality (Tasks reappear in the navigation drawer after beeing checked)
-    - implement recycle functionality (tasks reappear in drawer after the day passes without them beeing checked)
+    - * implement Recurring task functionality (Tasks reappear in the navigation drawer after beeing checked)
+    - * implement recycle functionality (tasks reappear in drawer after the day passes without them beeing checked)
     - navigation drawer nicer: - appears centered in y and only as high as there are tasks
-    - the task height gets saved in the db and shown in the planer
+    - * the task height gets saved in the db and shown in the planer
 
 Debug:
     - Weak reference crash on switching screens in planner and calendar
