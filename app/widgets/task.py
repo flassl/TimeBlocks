@@ -396,11 +396,12 @@ class TaskMenu(MDBoxLayout):
 
         def set_scroll_factor():
             max_height = Window.size[1]
-            if touch.pos[1] < max_height / 5:
-                speed = (1 - (touch.pos[1] / (max_height / 5)))
+            touch_pos_y = self.to_window(*touch.pos)[1]
+            if touch_pos_y < max_height / 5:
+                speed = (1 - (touch_pos_y / (max_height / 5)))
                 self.scroll_factor = - 0.01 * speed
-            elif touch.pos[1] > max_height * 0.75:
-                speed = ((touch.pos[1] - max_height * 0.75) / (max_height * 0.25))
+            elif touch_pos_y > max_height * 0.75:
+                speed = ((touch_pos_y - max_height * 0.75) / (max_height * 0.25))
                 self.scroll_factor = 0.01 * speed
             else:
                 self.scroll_factor = 0
