@@ -514,6 +514,15 @@ def update_event(ID, date_update, text, top_distance, color, font_color):
     connection.commit()
 
 
+def update_event_top(task_id, new_top):
+    cursor.execute(
+        f"UPDATE EventTasks "
+        f"SET "
+        f"top = '{new_top}' "
+        f"WHERE "
+        f"task_reference = '{task_id}'")
+    connection.commit()
+
 def get_task_amount_for_date(date):
     date_start_timestamp = datetime.combine(date, time(0, 0, 0)).timestamp()
     date_end = datetime.combine(date, time(0, 0, 0)) + timedelta(hours=23, minutes=59, seconds=59)

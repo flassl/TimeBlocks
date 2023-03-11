@@ -150,7 +150,7 @@ class EventDialogContent(MDBoxLayout):
                     print("saved event: " + self.ids.text_field_name.text)
                     pass
                 else:
-                    update_event(self.dialog.task_id, event_timestamp, input_text_name.text, calculte_top_from_time(event_time), [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
+                    update_event(self.dialog.task_id, event_timestamp, input_text_name.text, self.dialog.task_top, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
                     update_planer(2, self.dialog.task_id, event_timestamp)
                     print("updated event: " + input_text_name.text)
                     pass
@@ -191,6 +191,7 @@ class EventDialog(CustomTaskDialog):
             self.task = task_widget
             self.task_id = task_widget.task_id
             self.task_type = task_widget.task_type
+            self.task_top = task_widget.top
             Clock.schedule_once(self.fill_input_from_data, 0.1)
         else:
             self.task_id = -1

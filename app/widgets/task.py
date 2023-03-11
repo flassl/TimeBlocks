@@ -90,6 +90,7 @@ class Task(MDCard):
                 remove_planer(self.task_id, self.task_type)
                 fab.size = (fab.size[0] -10, fab.size[1] -10)
                 fab.pos = (fab.pos[0] + 10 / 2, fab.pos[1] + 10 / 2)
+                self.scroll_factor = 0
 
 
         def recreate_in_planer():
@@ -117,9 +118,12 @@ class Task(MDCard):
                 if self.task_type == 0:
                     de_activate_to_do(self.task_id, 1, 0, self.top)
                     update_task(self.task_id, current_planer_date,
-                                self.ids.content.text, self.top, 1)
+                                self.ids.content.text, self.top)
                 if self.task_type == 1:
                     de_activate_recurrent(self.task_id, 1, 0, self.top, current_planer_date)
+                if self.task_type == 2:
+                    update_event_top(self.task_id, self.top)
+
                 self.active = 1
                 MDApp.get_running_app().root.ids.planer_display.create_time_wall()
                 self.opacity = 1
@@ -234,7 +238,6 @@ class Task(MDCard):
 
     def delete_task(self, *args):
         remove_from_db(self.task_id, self.task_type)
-        self.scroll_factor = 0
         self.parent.remove_widget(self)
 
     def show_options(self):

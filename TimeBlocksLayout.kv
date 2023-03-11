@@ -20,6 +20,8 @@ TimeBlocks:
             radius: 30, 0, 0, 30
             elevation: 4
             anchor: "right"
+            size_hint: (0.9, 0.75)
+            pos_hint: {"center_y": .52}
 
             NavigationDrawerContent:
                 id: navigation_drawer_content
@@ -150,7 +152,7 @@ TimeBlocks:
     md_bg_color: [0.1, 0.1, 0.1, 1]
     canvas.before:
         Color:
-            rgba: 0.6, 0, .2, 1
+            rgba: 0.9, 0.2, 0, 1
         Line:
             width: 2
             ellipse: [self.x + self.width * 0.05, self.y, self.width * 0.9, 4]
