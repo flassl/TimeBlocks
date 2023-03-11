@@ -142,7 +142,7 @@ class Task(MDCard):
 
         def set_scroll_factor():
             max_height = Window.size[1]
-            if touch.pos[1] < max_height / 5:
+            if touch.pos[1] < max_height / 5 and touch.pos[0] < Window.size[0] * 0.65:
                 speed = (1 - (touch.pos[1] / (max_height / 5)))
                 self.scroll_factor = - 0.01 * speed
             elif touch.pos[1] > max_height * 0.75:
@@ -226,6 +226,7 @@ class Task(MDCard):
 
     def delete_task(self, *args):
         remove_from_db(self.task_id, self.task_type)
+        self.scroll_factor = 0
         self.parent.remove_widget(self)
 
     def show_options(self):
