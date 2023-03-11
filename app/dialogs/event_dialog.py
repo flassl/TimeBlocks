@@ -144,12 +144,13 @@ class EventDialogContent(MDBoxLayout):
                 event_time = time(hour=int(self.hour), minute=int(self.minute))
                 event_timestamp = datetime.combine(event_date, event_time).timestamp()
                 if self.dialog.task_id == -1:
+                    print(calculte_top_from_time(event_time))
                     save_event(event_timestamp, input_text_name.text, calculte_top_from_time(event_time), 1, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
                     save_planer(2, cursor.lastrowid, event_timestamp)
                     print("saved event: " + self.ids.text_field_name.text)
                     pass
                 else:
-                    update_event(self.dialog.task_id, event_timestamp, input_text_name.text, calculte_top_from_time(event_time), 1, [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
+                    update_event(self.dialog.task_id, event_timestamp, input_text_name.text, calculte_top_from_time(event_time), [0.2, 0.2, 0.2, 0.2], [0.8, 0.8, 0.8, 0.8])
                     update_planer(2, self.dialog.task_id, event_timestamp)
                     print("updated event: " + input_text_name.text)
                     pass

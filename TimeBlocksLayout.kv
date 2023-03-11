@@ -148,6 +148,15 @@ TimeBlocks:
     on_release: self.show_options()
     radius: 10
     md_bg_color: [0.1, 0.1, 0.1, 1]
+    canvas.before:
+        Color:
+            rgba: 0.6, 0, .2, 1
+        Line:
+            width: 2
+            ellipse: [self.x + self.width * 0.05, self.y, self.width * 0.9, 4]
+        Line:
+            width: 2
+            ellipse: [self.x + self.width * 0.05, self.y + self.height - 4, self.width * 0.9, 4]
     MDBoxLayout:
         size_hint_x: 0.2
         id: menu_layout

@@ -19,5 +19,6 @@ Details:
 Luxury:
     - Add checkable milestones to tasks
     - implement repeat functionality in events
+    - events from calendar are importable
 
 

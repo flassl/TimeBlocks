@@ -119,7 +119,7 @@ def save_task(task_type, creation_date, active, done, text, top, duration):
     connection.commit()
 
 
-def update_task(ID, date_update, text, top, duration):
+def update_task(ID, date_update, text, top):
     if isinstance(date_update, date):
         date_update = datetime.combine(date_update, time(0, 0))
     date_update_timestamp = date_update.timestamp()
@@ -128,16 +128,17 @@ def update_task(ID, date_update, text, top, duration):
         f"SET "
         f"text = '{text}', "
         f"top = '{top}', "
-        f"date_timestamp = '{date_update_timestamp}', "
-        f"duration = '{duration}' "
+        f"date_timestamp = '{date_update_timestamp}' "
         f"WHERE "
         f"task_reference = '{ID}'")
     connection.commit()
 
 
-def update_task_duration(ID, duration):
+def update_task_duration(ID, task_type, duration):
+    list_name = get_list_from_task_type(task_type)
+
     cursor.execute(
-        f"UPDATE ToDoTasks "
+        f"UPDATE {list_name} "
         f"SET "
         f"duration = '{duration}' "
         f"WHERE "
@@ -366,7 +367,7 @@ def delete_recurrent_entry(task_reference):
     connection.commit()
 
 
-def update_recurrent(ID, date_update, text, top_distance, duration, period, unit_str, color, font_color):
+def update_recurrent(ID, date_update, text, top_distance, period, unit_str, color, font_color):
     if isinstance(date_update, date):
         date_update = datetime.combine(date_update, time(0, 0))
     date_timestamp = datetime.timestamp(date_update)
@@ -379,8 +380,7 @@ def update_recurrent(ID, date_update, text, top_distance, duration, period, unit
         f"period = '{period}', "
         f"unit_str = '{unit_str}', "
         f"color = '{color}', "
-        f"font_color = '{font_color}', "
-        f"duration = '{duration}' "
+        f"font_color = '{font_color}' "
         f"WHERE "
         f"task_reference = '{ID}'")
     connection.commit()
@@ -412,7 +412,13 @@ def un_redo_recurrent(ID, done, active):
         f"task_reference = '{ID}'")
     connection.commit()
 
-
+def get_list_from_task_type(task_type):
+    if task_type == 0:
+        return "ToDoTasks"
+    if task_type == 1:
+        return "RecurrentTasks"
+    if task_type == 2:
+        return "EventTasks"
 #def show_due_recurrent_tasks(dt):
 #
 #    def show_recurrent(task):
@@ -492,7 +498,7 @@ def save_event(event_timestamp, text, top_distance, duration, color, font_color)
     connection.commit()
 
 
-def update_event(ID, date_update, text, top_distance, duration, color, font_color):
+def update_event(ID, date_update, text, top_distance, color, font_color):
     if isinstance(date_update, datetime):
         date_update = date_update.timestamp()
     cursor.execute(
@@ -502,8 +508,7 @@ def update_event(ID, date_update, text, top_distance, duration, color, font_colo
         f"top = '{top_distance}', "
         f"date_timestamp = '{date_update}', "
         f"color = '{color}', "
-        f"font_color = '{font_color}', "
-        f"duration = '{duration}' "
+        f"font_color = '{font_color}' "
         f"WHERE "
         f"task_reference = '{ID}'")
     connection.commit()

@@ -126,6 +126,14 @@ class Task(MDCard):
             else:
                 print("you should not make plans for the past")
                 recreate_in_drawer()
+                Snackbar(
+                    text="you should not make plans for the past",
+                    snackbar_x="10dp",
+                    snackbar_y="10dp",
+                    size_hint_x=(
+                                        Window.width - (dp(10) * 2)
+                                ) / Window.width
+                ).open()
 
         self.dragging = False
         Clock.unschedule(self.scroll_handler)
@@ -398,7 +406,7 @@ class TaskMenu(MDBoxLayout):
                 self.parent_task.stretching = False
                 self.parent_task.options_showing = False
                 self.new_height_in_blocks = self.parent_task.size[1]/30
-                update_task_duration(self.parent.parent.task_id, self.new_height_in_blocks)
+                update_task_duration(self.parent.parent.task_id, self.parent_task.task_type, self.new_height_in_blocks)
                 self.parent_task.hide_options(0)
                 self.stretch_start_y = None
                 self.start_pos = None
