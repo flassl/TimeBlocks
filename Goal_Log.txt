@@ -1,7 +1,6 @@
 MVP:
     - Tasks can not cover one another nor get dropped on top og each other
     - On_Deployment: the database does not get overwritten after updating app
-    - * implement Recurring task functionality (Tasks reappear in the navigation drawer after beeing checked)
     - navigation drawer nicer: - appears centered in y and only as high as there are tasks
     - TaskDialog nicer: more space
 
@@ -11,6 +10,7 @@ Debug:
     - Touch up does not come through in navigation drawer
      -> fast/ double-clicking on task list
     - * clean the task positioning hint after deleting tasks (occurs sometimes)
+
 
 Details:
     - Task positioning hint disappears when hovering with a dragged task over the FAB
