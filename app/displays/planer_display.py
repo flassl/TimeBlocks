@@ -177,6 +177,7 @@ class PlanerDisplay(MDFloatLayout):
         load_tasks_to_list(0)
         navigation_drawer = MDApp.get_running_app().root.ids.navigation_drawer
         navigation_drawer_content = MDApp.get_running_app().root.ids.navigation_drawer_content
+        deactivate_passed_tasks()
         navigation_drawer_content.load_tasks_to_list(0)
         navigation_drawer.set_state("open")
         navigation_drawer_content.display_task_type = 0

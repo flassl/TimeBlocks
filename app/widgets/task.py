@@ -98,22 +98,34 @@ class Task(MDCard):
             self.active_planer_day.ids.planer_float_layout.add_widget(temp)
             self.elevation = 0
 
+        def recreate_in_drawer():
+            temp = self
+            self.parent.remove_widget(self)
+            MDApp.get_running_app().root.ids.navigation_drawer_content.ids.stack_layout.add_widget(temp)
+            self.elevation = 0
+
         if self.dragging and not self.deleted:
             current_planer_date = MDApp.get_running_app().root.ids.planer_display.displayed_date
-            recreate_in_planer()
-            self.pos = [50, calculate_snapping_point(self.active_planer_day,
-                                                  self.current_touch_position[1] - self.height / 2)]
-            if self.active == 0:
-                save_planer(self.task_type, self.task_id, MDApp.get_running_app().root.ids.planer_display.displayed_date)
-            if self.task_type == 0:
-                de_activate_to_do(self.task_id, 1, 0, self.top)
-                update_task(self.task_id, current_planer_date,
-                            self.ids.content.text, self.top, 1)
-            if self.task_type == 1:
-                de_activate_recurrent(self.task_id, 1, 0, self.top, current_planer_date)
-            self.active = 1
-            MDApp.get_running_app().root.ids.planer_display.create_time_wall()
-            self.opacity = 1
+            today_start_timestamp = datetime.combine(date.today(), time(0, 0, 0)).timestamp()
+            current_planer_date_end_timestamp = datetime.combine(current_planer_date, time(23, 59, 59)).timestamp()
+            if current_planer_date_end_timestamp > today_start_timestamp:
+                recreate_in_planer()
+                self.pos = [50, calculate_snapping_point(self.active_planer_day,
+                                                      self.current_touch_position[1] - self.height / 2)]
+                if self.active == 0:
+                    save_planer(self.task_type, self.task_id, MDApp.get_running_app().root.ids.planer_display.displayed_date)
+                if self.task_type == 0:
+                    de_activate_to_do(self.task_id, 1, 0, self.top)
+                    update_task(self.task_id, current_planer_date,
+                                self.ids.content.text, self.top, 1)
+                if self.task_type == 1:
+                    de_activate_recurrent(self.task_id, 1, 0, self.top, current_planer_date)
+                self.active = 1
+                MDApp.get_running_app().root.ids.planer_display.create_time_wall()
+                self.opacity = 1
+            else:
+                print("you should not make plans for the past")
+                recreate_in_drawer()
 
         self.dragging = False
         Clock.unschedule(self.scroll_handler)
@@ -314,12 +326,6 @@ class Task(MDCard):
             if self.task_type == 2:
                 # ToDo: implement for event
                 pass
-
-        def save_entry():
-            save_recurrent_entry(datetime.now(),self.task_id)
-
-        def delete_entry():
-            delete_recurrent_entry(self.task_id)
 
         def check_task():
 

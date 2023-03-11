@@ -224,6 +224,18 @@ def get_list_tasks():
     tasks = cursor.fetchall()
     return tasks
 
+def deactivate_passed_tasks():
+    date_start_timestamp = datetime.combine(date.today(), time(0, 0, 0)).timestamp()
+    cursor.execute(
+        f"UPDATE ToDoTasks "
+        f"SET "
+        f"active = '0' "
+        f"WHERE "
+        f"date_timestamp < '{date_start_timestamp}'")
+    print(cursor.fetchall())
+    connection.commit()
+    pass
+
 
 def get_list_recurrent():
     tasks = []
@@ -299,7 +311,7 @@ def set_due_recurrent_tasks_to_undone():
         period = int(task_data[8])
         unit_str = task_data[9]
         if unit_str == "Hours":
-            millis = period * 1000 * 60 * 60
+            millis = period * 1000
         if unit_str == "Days":
             millis = period * 1000 * 60 * 60 * 24
         if unit_str == "Weeks":
