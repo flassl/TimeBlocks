@@ -23,7 +23,7 @@ class NavigationDrawerContent(MDBoxLayout):
 
     def load_tasks_to_list(self, task_type):
         tasks = get_list_tasks()
-        recurrent_tasks = get_list_recurrent()
+        recurrent_tasks = get_all_due_recurrent_tasks()
         scroll_view = MDApp.get_running_app().root.ids.navigation_drawer_content.ids.stack_layout
         scroll_view.clear_widgets()
 

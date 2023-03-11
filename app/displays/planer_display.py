@@ -69,7 +69,6 @@ class PlanerDisplay(MDFloatLayout):
             cursor.execute(f"SELECT * FROM {table_name} WHERE task_reference = '{row[2]}'")
             connection.commit()
             task_values = cursor.fetchone()
-            print(task_values)
             # if task_values[4] == 1:
             #   load_checked_task(task_values[5], task_values[6], task_values[7], task_values[2])
             # else:
@@ -178,6 +177,7 @@ class PlanerDisplay(MDFloatLayout):
         load_tasks_to_list(0)
         navigation_drawer = MDApp.get_running_app().root.ids.navigation_drawer
         navigation_drawer_content = MDApp.get_running_app().root.ids.navigation_drawer_content
+        navigation_drawer_content.load_tasks_to_list(0)
         navigation_drawer.set_state("open")
         navigation_drawer_content.display_task_type = 0
         navigation_drawer_content.ids.drawer_title.text = "To Do:"
@@ -186,9 +186,12 @@ class PlanerDisplay(MDFloatLayout):
         load_tasks_to_list(1)
         navigation_drawer = MDApp.get_running_app().root.ids.navigation_drawer
         navigation_drawer_content = MDApp.get_running_app().root.ids.navigation_drawer_content
+        navigation_drawer_content.load_tasks_to_list(1)
+        self.show_tasks(self.displayed_date, 0)
         navigation_drawer.set_state("open")
         navigation_drawer_content.display_task_type = 1
         navigation_drawer_content.ids.drawer_title.text = "Recurring Tasks:"
+
 
     def show_calendar(self):
         root = MDApp.get_running_app().root

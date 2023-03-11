@@ -315,18 +315,26 @@ class Task(MDCard):
                 # ToDo: implement for event
                 pass
 
+        def save_entry():
+            save_recurrent_entry(datetime.now(),self.task_id)
+
+        def delete_entry():
+            delete_recurrent_entry(self.task_id)
+
         def check_task():
 
             self.check_button.icon = "check-circle"
             self.check_button.children[0].color = [0.5, 0.8, 0, 1]
             self.done = 1
             save_in_db()
+            save_recurrent_entry(datetime.now(), self.task_id)
 
         def uncheck_task():
             self.check_button.icon = "check-circle-outline"
             self.check_button.children[0].color = [1, 1, 1, 1]
             self.done = 0
             save_in_db()
+            delete_recurrent_entry(self.task_id)
 
         self.checked = not self.checked
         if self.checked:

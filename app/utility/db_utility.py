@@ -48,7 +48,6 @@ def create_db():
             CREATE TABLE IF NOT EXISTS RecurrentTaskEntries (
             entry_reference integer PRIMARY KEY,
             date_timestamp integer NOT NULL,
-            unit_str text NOT NULL,
             task_reference integer NOT NULL,
             FOREIGN KEY (task_reference)
                 REFERENCES RecurrentTasks (task_reference)
@@ -273,6 +272,58 @@ def get_list_recurrent():
     return tasks
 
 
+def get_all_recurrent_entries():
+    cursor.execute(f"SELECT * FROM RecurrentTaskEntries")
+    entries = cursor.fetchall()
+    connection.commit()
+    return entries
+
+
+def get_all_recurrent_tasks_by_done(done):
+    cursor.execute(f"SELECT * FROM RecurrentTasks WHERE done='{done}'")
+    entries = cursor.fetchall()
+    connection.commit()
+    return entries
+
+
+def get_all_recurrent_tasks_by_done_and_active(done, active):
+    cursor.execute(f"SELECT * FROM RecurrentTasks WHERE done='{done}' AND active = '{active}'")
+    entries = cursor.fetchall()
+    connection.commit()
+    return entries
+
+
+def set_due_recurrent_tasks_to_undone():
+    def task_period_to_millis(task_data):
+        millis = 0
+        period = int(task_data[8])
+        unit_str = task_data[9]
+        if unit_str == "Hours":
+            millis = period * 1000 * 60 * 60
+        if unit_str == "Days":
+            millis = period * 1000 * 60 * 60 * 24
+        if unit_str == "Weeks":
+            millis = period * 1000 * 60 * 60 * 24 * 7
+
+        return millis
+
+    tasks_data = get_all_recurrent_tasks_by_done(1)
+    for task_data in tasks_data:
+        if task_data:
+            entry = get_recurrent_entry(task_data[0])
+            if entry:
+                elapsed_time_since_check = datetime.now().timestamp() - entry[1]
+                if elapsed_time_since_check * 1000 >= task_period_to_millis(task_data):
+                    un_redo_recurrent(task_data[0], 0, 0)
+                    remove_planer(task_data[0], 1)
+
+
+def get_all_due_recurrent_tasks():
+    set_due_recurrent_tasks_to_undone()
+    tasks = get_all_recurrent_tasks_by_done_and_active(0, 0)
+    return tasks
+
+
 def save_recurrent(task_type, creation_date, active, done, text, top_distance, duration,
                    period, unit_str, color, font_color):
     date_timestamp = datetime.timestamp(creation_date)
@@ -282,10 +333,24 @@ def save_recurrent(task_type, creation_date, active, done, text, top_distance, d
     connection.commit()
 
 
-def save_recurrent_entry(date_now, unit_str, task_reference):
+
+def get_recurrent_entry(task_id):
+    cursor.execute(f"SELECT * FROM RecurrentTaskEntries WHERE task_reference='{task_id}'")
+    entry = cursor.fetchone()
+    connection.commit()
+    return entry
+
+
+def save_recurrent_entry(date_now, task_reference):
     timestamp = date_now.timestamp()
     cursor.execute(
-        f"INSERT INTO RecurrentTaskEntries VALUES(NULL, '{timestamp}', '{unit_str}', '{task_reference}')")
+        f"INSERT INTO RecurrentTaskEntries VALUES(NULL, '{timestamp}', '{task_reference}')")
+    connection.commit()
+
+
+def delete_recurrent_entry(task_reference):
+    cursor.execute(
+        f"DELETE FROM RecurrentTaskEntries WHERE task_reference ='{task_reference}'")
     connection.commit()
 
 
@@ -320,6 +385,17 @@ def de_activate_recurrent(ID, active, done, new_top, update_date):
         f"done = '{done}', "
         f"top = '{new_top}', "
         f"date_timestamp = {update_date_timestamp} "
+        f"WHERE "
+        f"task_reference = '{ID}'")
+    connection.commit()
+
+
+def un_redo_recurrent(ID, done, active):
+    cursor.execute(
+        f"UPDATE RecurrentTasks "
+        f"SET "
+        f"done = '{done}', "
+        f"active = '{active}' "
         f"WHERE "
         f"task_reference = '{ID}'")
     connection.commit()
