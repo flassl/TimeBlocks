@@ -64,8 +64,9 @@ class TimeBlocksApp (MDApp):
         return Builder.load_file("TimeBlocksLayout.kv")
 
     def on_start(self):
-        # app = MDApp.get_running_app()
+        app = MDApp.get_running_app()
         # Window.bind(size=app.root.on_resize)
+        app.root.ids.planer_display.on_load()
         Window.softinput_mode = "below_target"
         Window.release_all_keyboards()
 
