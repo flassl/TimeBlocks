@@ -15,7 +15,7 @@ class PlanerDisplay(MDFloatLayout):
         self.dialog = None
         Clock.schedule_once(self._set_variables, 0.1)
         Clock.schedule_once(self._add_labels, 0.1)
-        Clock.schedule_once(partial(self.show_tasks, date.today()), 1)
+        Clock.schedule_once(partial(self.show_tasks, date.today()), 1.5)
         Clock.schedule_interval(self.update_time_wall, 60)
 
     def _set_variables(self, dt):
