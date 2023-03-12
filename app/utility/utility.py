@@ -1,7 +1,8 @@
 from app.utility.db_utility import *
 from kivy.animation import Animation
+from kivy.metrics import dp
 
-item_height = 30
+item_height = dp(30)
 start_hour = 5
 displayed_hours = 24 - start_hour
 

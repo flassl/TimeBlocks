@@ -17,7 +17,7 @@ TimeBlocks:
 
         MDNavigationDrawer:
             id: navigation_drawer
-            radius: 30, 0, 0, 30
+            radius: "30dp", 0, 0, "30dp"
             elevation: 4
             anchor: "right"
             size_hint: (0.9, 0.75)
@@ -36,7 +36,7 @@ TimeBlocks:
             id: time_display
             size_hint: (0.15, None)
             md_bg_color: app.theme_cls.bg_dark
-            radius: 0, 20, 20, 0
+            radius: 0, "20dp", "20dp", 0
         MDFloatLayout:
             id: planer_float_layout
             size_hint: (1, None)
@@ -107,7 +107,7 @@ TimeBlocks:
     id: task_popup
     MDBoxLayout:
         orientation: "vertical"
-        padding: 20, 0 , 20, 0
+        padding: "20dp", 0 , "20dp", 0
         MDTextField:
             id: task_text_input
             hint_text: "Enter the Task to add"
@@ -119,7 +119,7 @@ TimeBlocks:
 <NavigationDrawerContent>
     MDBoxLayout:
         orientation: "vertical"
-        spacing: 10
+        spacing: "10dp"
         MDBoxLayout:
             size_hint_y: 0.08
             MDLabel:
@@ -141,23 +141,23 @@ TimeBlocks:
                 id: stack_layout
                 size_hint_y: None
                 height: self.minimum_height
-                spacing: 10
+                spacing: "10dp"
 
 <Task>
     size_hint_y: None
-    height: 30
+    height: "30dp"
     elevation: 0
     on_release: self.show_options()
-    radius: 10
+    radius: "10dp"
     md_bg_color: [0.1, 0.1, 0.1, 1]
     canvas.before:
         Color:
             rgba: 0.9, 0.2, 0, 1
         Line:
-            width: 2
+            width: "2dp"
             ellipse: [self.x + self.width * 0.05, self.y, self.width * 0.9, 4]
         Line:
-            width: 2
+            width: "2dp"
             ellipse: [self.x + self.width * 0.05, self.y + self.height - 4, self.width * 0.9, 4]
     MDBoxLayout:
         size_hint_x: 0.2
@@ -185,9 +185,9 @@ TimeBlocks:
 
 <RecurrentDialogContent>
     orientation: "vertical"
-    spacing: 10
+    spacing: "10dp"
     size_hint_y: None
-    height: 250
+    height: "250dp"
     MDTextField:
         id: text_field_name
         hint_text: "Enter the Recurrent task to add"
@@ -207,7 +207,7 @@ TimeBlocks:
 
     MDBoxLayout:
         adaptive_width: True
-        spacing: 20
+        spacing: "20dp"
         pos_hint: {"center_x": .5, "center_y": .5}
         AppToggleButton:
             id: hours_button
@@ -228,9 +228,9 @@ TimeBlocks:
 
 <EventDialogContent>
     orientation: "vertical"
-    spacing: 40
+    spacing: "40dp"
     size_hint_y: None
-    height: 250
+    height: "250dp"
     MDTextField:
         id: text_field_name
         hint_text: "Enter the Event's name"
@@ -239,7 +239,7 @@ TimeBlocks:
         helper_text_mode: "on_error"
     MDBoxLayout:
         pos_hint: {"center_x": .5, "center_y": .5}
-        spacing: 40
+        spacing: "40dp"
         MDIconButton:
             id: time_picker_button
             size_hint_x: 0.5
@@ -270,7 +270,7 @@ TimeBlocks:
         id: float_layout
         MDBoxLayout:
             id: drop_down_box
-            spacing: 5
+            spacing: "5dp"
             AppToggleButton:
                 id: mon
                 size_hint_x: None
@@ -343,11 +343,11 @@ TimeBlocks:
             text: "demo"
         MDStackLayout:
             id: list
-            spacing: 2
+            spacing: "2dp"
         Widget:
 <CalendarDayItem>
     size_hint: (1, None)
-    height: 8
+    height: "8dp"
     canvas:
         Color:
             rgb: app.theme_cls.primary_dark
@@ -359,45 +359,45 @@ TimeBlocks:
 
 <CalendarMonth>
     md_bg_color: app.theme_cls.bg_dark
-    radius: 10, 10, 0, 0
+    radius: "10dp", "10dp", 0, 0
     orientation: "vertical"
     GridLayout:
         id: grid
         cols: 7
         Label:
             size_hint_y: None
-            height: 20
+            height: "20dp"
             text: "Mo."
         Label:
             size_hint_y: None
-            height: 20
+            height: "20dp"
             text: "Tu."
         Label:
             size_hint_y: None
-            height: 20
+            height: "20dp"
             text: "We."
         Label:
             size_hint_y: None
-            height: 20
+            height: "20dp"
             text: "Th."
         Label:
             size_hint_y: None
-            height: 20
+            height: "20dp"
             text: "Fr."
         Label:
             size_hint_y: None
-            height: 20
+            height: "20dp"
             text: "Sa."
         Label:
             size_hint_y: None
-            height: 20
+            height: "20dp"
             text: "Su."
 
 <CalendarDisplay>
 
     MDBoxLayout:
         orientation: "vertical"
-        spacing: 10
+        spacing: "10dp"
         MDBoxLayout:
             size_hint: (1, 0.07)
             MDIconButton:
@@ -450,13 +450,13 @@ TimeBlocks:
                 pos: (50, self.pos[1])
                 size: (self.width, 3000)
     Widget:
-        pos_x: 30
+        pos_x: "30dp"
         size_hint: (1, None)
         size: (self.width, 3)
         canvas:
             Color:
                 rgb: app.theme_cls.primary_dark
             RoundedRectangle:
-                pos: (50, self.pos[1])
+                pos: ("50dp", self.pos[1])
                 size: self.size
                 radius: [5]

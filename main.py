@@ -9,6 +9,11 @@ from app.utility.utility import *
 from app.displays.planer_display import *
 from kivy.core.window import Window
 from kivy.metrics import dp
+#window_width = dp(360)
+#window_height = dp(780)
+#Window.size = (window_width, window_height)
+#Window.top = 100
+##Window.left = -1200
 from kivy.lang.builder import Builder
 from kivy.clock import Clock
 from kivymd.app import MDApp
