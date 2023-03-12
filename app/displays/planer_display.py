@@ -16,6 +16,7 @@ class PlanerDisplay(MDFloatLayout):
         Clock.schedule_once(self._set_variables, 0.1)
         Clock.schedule_once(self._add_labels, 0.1)
         Clock.schedule_once(partial(self.show_tasks, date.today()), 3)
+        Clock.schedule_once(self.show_and_scroll_to_time_wall, 3)
         Clock.schedule_interval(self.update_time_wall, 60)
 
     def on_load(self):
@@ -95,7 +96,8 @@ class PlanerDisplay(MDFloatLayout):
             if row[1] == 2:
                 add_to_planer_from_table("EventTasks")
 
-        if planer_date == date.today():
+    def show_and_scroll_to_time_wall(self, dt):
+        if self.displayed_date == date.today():
             self.create_time_wall()
             #Clock.schedule_once(self.smooth_scroll_to_time, 0.8)
             self.smooth_scroll_to_time(0)
@@ -108,6 +110,12 @@ class PlanerDisplay(MDFloatLayout):
             self.active_planer_day.ids.planer_float_layout.add_widget(self.time_wall)
             self.time_wall.pos[1] = dp(3000)
             self.update_time_wall(0)
+    def redo_time_wall(self):
+        if self.time_wall and self.time_wall.parent:
+            temp = self.time_wall
+            parent = self.time_wall.parent
+            self.time_wall.parent.remove_widget(self.time_wall)
+            parent.add_widget(temp)
 
     def smooth_scroll_to_time(self, dt):
         current_time = datetime.now()
@@ -155,7 +163,8 @@ class PlanerDisplay(MDFloatLayout):
         self.update_screen_values(other_screen)
         self.displayed_date = date
         self._add_labels(0)
-        self.show_tasks(self.displayed_date, 0)
+        Clock.schedule_once(partial(self.show_tasks, self.displayed_date), 3)
+        Clock.schedule_once(self.show_and_scroll_to_time_wall, 3)
         return other_screen
 
     def show_previous(self):

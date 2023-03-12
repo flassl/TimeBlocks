@@ -128,7 +128,7 @@ class Task(MDCard):
                     update_event_top(self.task_id, self.top)
 
                 self.active = 1
-                MDApp.get_running_app().root.ids.planer_display.create_time_wall()
+                MDApp.get_running_app().root.ids.planer_display.redo_time_wall()
                 self.opacity = 1
             else:
                 print("you should not make plans for the past")
