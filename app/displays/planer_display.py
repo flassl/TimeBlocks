@@ -80,7 +80,7 @@ class PlanerDisplay(MDFloatLayout):
             new_task.size = (new_task.size[0], height)
             new_task.ids.content.text = task_values[5 + event_data_index_displacement]
             new_task.top = task_values[6 + event_data_index_displacement]
-            new_task.pos = [dp(50), new_task.pos[1]]
+            new_task.pos = [self.active_planer_day.ids.time_display.width + dp(8), new_task.pos[1]]
             self.active_planer_day.ids.planer_float_layout.add_widget(new_task)
             # planer_task_list.append(new_task)
 

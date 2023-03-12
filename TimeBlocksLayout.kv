@@ -154,10 +154,10 @@ TimeBlocks:
         Color:
             rgba: 0.9, 0.2, 0, 1
         Line:
-            width: "2dp"
+            width: dp(2)
             ellipse: [self.x + self.width * 0.05, self.y, self.width * 0.9, 4]
         Line:
-            width: "2dp"
+            width: dp(2)
             ellipse: [self.x + self.width * 0.05, self.y + self.height - 4, self.width * 0.9, 4]
     MDBoxLayout:
         size_hint_x: 0.2
@@ -447,7 +447,7 @@ TimeBlocks:
             Color:
                 rgba: [0.2, 0.2, 0.2, 0.5]
             Rectangle:
-                pos: ("50dp", self.pos[1])
+                pos: (app.width - self.parent.width, self.pos[1])
                 size: (self.width, 3000)
     Widget:
         pos_x: "30dp"
@@ -457,6 +457,6 @@ TimeBlocks:
             Color:
                 rgb: app.theme_cls.primary_dark
             RoundedRectangle:
-                pos: ("50dp", self.pos[1])
+                pos: (app.width - self.parent.width, self.pos[1])
                 size: self.size
                 radius: [5]

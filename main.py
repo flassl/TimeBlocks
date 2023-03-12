@@ -59,6 +59,8 @@ class TimeBlocksApp (MDApp):
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Pink"
+        self.width = Window.width
+        self.height = Window.height
         return Builder.load_file("TimeBlocksLayout.kv")
 
     def on_start(self):

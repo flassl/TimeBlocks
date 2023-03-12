@@ -106,12 +106,14 @@ class Task(MDCard):
             self.elevation = 0
 
         if self.dragging and not self.deleted:
-            current_planer_date = MDApp.get_running_app().root.ids.planer_display.displayed_date
+            planer_display = MDApp.get_running_app().root.ids.planer_display
+            active_planer_day = planer_display.active_planer_day
+            current_planer_date = planer_display.displayed_date
             today_start_timestamp = datetime.combine(date.today(), time(0, 0, 0)).timestamp()
             current_planer_date_end_timestamp = datetime.combine(current_planer_date, time(23, 59, 59)).timestamp()
             if current_planer_date_end_timestamp > today_start_timestamp:
                 recreate_in_planer()
-                self.pos = [50, calculate_snapping_point(self.active_planer_day,
+                self.pos = [active_planer_day.ids.time_display.width, calculate_snapping_point(self.active_planer_day,
                                                       self.current_touch_position[1] - self.height / 2)]
                 if self.active == 0:
                     save_planer(self.task_type, self.task_id, MDApp.get_running_app().root.ids.planer_display.displayed_date)
@@ -232,8 +234,10 @@ class Task(MDCard):
             touch_pos = [self.current_touch_position[0] - self.width / 3, self.current_touch_position[1] - self.height / 2]
             self.pos = touch_pos
             if self.positioning_hint:
+                planer_display = MDApp.get_running_app().root.ids.planer_display
+                active_planer_day = planer_display.active_planer_day
                 self.positioning_hint.pos =\
-                    [50, calculate_snapping_point(self.active_planer_day,
+                    [active_planer_day.ids.time_display.width, calculate_snapping_point(self.active_planer_day,
                                                   self.current_touch_position[1] - self.height / 2)]
 
     def delete_task(self, *args):
