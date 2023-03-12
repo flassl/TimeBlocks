@@ -106,6 +106,7 @@ class Task(MDCard):
             self.elevation = 0
 
         if self.dragging and not self.deleted:
+            self.positioning_hint.parent.remove_widget(self.positioning_hint)
             planer_display = MDApp.get_running_app().root.ids.planer_display
             active_planer_day = planer_display.active_planer_day
             current_planer_date = planer_display.displayed_date
