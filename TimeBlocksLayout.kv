@@ -145,14 +145,14 @@ TimeBlocks:
 
 <Task>
     size_hint_y: None
-    height: "30dp"
+    height: dp(30)
     elevation: 0
     on_release: self.show_options()
     radius: "10dp"
     md_bg_color: [0.1, 0.1, 0.1, 1]
     canvas.before:
         Color:
-            rgba: 0.9, 0.2, 0, 1
+            rgb: app.theme_cls.primary_dark
         Line:
             width: dp(2)
             ellipse: [self.x + self.width * 0.05, self.y, self.width * 0.9, dp(4)]
@@ -455,7 +455,7 @@ TimeBlocks:
         size: (self.width, 3)
         canvas:
             Color:
-                rgb: app.theme_cls.primary_dark
+                rgb: [0, 0, 0.9]
             RoundedRectangle:
                 pos: (app.width - self.parent.width, self.pos[1])
                 size: self.size
