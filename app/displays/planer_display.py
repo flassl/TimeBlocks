@@ -110,6 +110,7 @@ class PlanerDisplay(MDFloatLayout):
             self.active_planer_day.ids.planer_float_layout.add_widget(self.time_wall)
             self.time_wall.pos[1] = dp(3000)
             self.update_time_wall(0)
+
     def redo_time_wall(self):
         if self.time_wall and self.time_wall.parent:
             temp = self.time_wall
@@ -208,7 +209,6 @@ class PlanerDisplay(MDFloatLayout):
         navigation_drawer.set_state("open")
         navigation_drawer_content.display_task_type = 1
         navigation_drawer_content.ids.drawer_title.text = "Recurring Tasks:"
-
 
     def show_calendar(self):
         root = MDApp.get_running_app().root

@@ -223,6 +223,7 @@ def update_planer(task_type, task_id, planed_date):
 def get_list_tasks():
     cursor.execute("SELECT * FROM ToDoTasks WHERE active = '0' AND done = '0'")
     tasks = cursor.fetchall()
+    print(tasks)
     return tasks
 
 def deactivate_passed_tasks():
@@ -230,7 +231,7 @@ def deactivate_passed_tasks():
     cursor.execute(
         f"UPDATE ToDoTasks "
         f"SET "
-        f"active = '0' "
+        f"active = '-1' "
         f"WHERE "
         f"date_timestamp < '{date_start_timestamp}'")
     print(cursor.fetchall())
@@ -513,6 +514,16 @@ def update_event(ID, date_update, text, top_distance, color, font_color):
         f"task_reference = '{ID}'")
     connection.commit()
 
+
+def check_event(id, done):
+    cursor.execute(
+        f"UPDATE EventTasks "
+        f"SET "
+        f"done = '{done}' "
+        f"date_timestamp = {datetime.now().timestamp()} "
+        f"WHERE "
+        f"task_reference = '{id}'")
+    connection.commit()
 
 def update_event_top(task_id, new_top):
     cursor.execute(

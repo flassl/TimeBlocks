@@ -142,8 +142,11 @@ class Task(MDCard):
                                 ) / Window.width
                 ).open()
 
+        self.scroll_factor = 0
+
         self.dragging = False
-        Clock.unschedule(self.scroll_handler)
+        if self.scroll_handler:
+            self.scroll_handler.cancel()
         return super().on_touch_up(touch)
 
     def on_touch_move(self, touch, *args):
@@ -221,7 +224,6 @@ class Task(MDCard):
             self.hide_options(0)
 
         self.scroll_handler = Clock.schedule_interval(self.handle_scroll, 0.03)
-        print(self.scroll_handler)
 
     def handle_scroll(self, dt):
         if not self.active_planer_day:
@@ -341,7 +343,7 @@ class Task(MDCard):
             if self.task_type == 1:
                 de_activate_recurrent(self.task_id, self.active, self.done, self.top, datetime.now())
             if self.task_type == 2:
-                # ToDo: implement for event
+                check_event(self.task_id, self.done)
                 pass
 
         def check_task():
@@ -413,7 +415,7 @@ class TaskMenu(MDBoxLayout):
             if self.parent_task.stretching:
                 self.parent_task.stretching = False
                 self.parent_task.options_showing = False
-                self.new_height_in_blocks = self.parent_task.size[1]/30
+                self.new_height_in_blocks = self.parent_task.size[1]/dp(30)
                 update_task_duration(self.parent.parent.task_id, self.parent_task.task_type, self.new_height_in_blocks)
                 self.parent_task.hide_options(0)
                 self.stretch_start_y = None
