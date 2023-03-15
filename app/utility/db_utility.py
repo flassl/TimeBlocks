@@ -223,18 +223,19 @@ def update_planer(task_type, task_id, planed_date):
 def get_list_tasks():
     cursor.execute("SELECT * FROM ToDoTasks WHERE active = '0' AND done = '0'")
     tasks = cursor.fetchall()
-    print(tasks)
     return tasks
+
 
 def deactivate_passed_tasks():
     date_start_timestamp = datetime.combine(date.today(), time(0, 0, 0)).timestamp()
     cursor.execute(
         f"UPDATE ToDoTasks "
         f"SET "
-        f"active = '-1' "
+        f"active = '0' "
         f"WHERE "
-        f"date_timestamp < '{date_start_timestamp}'")
-    print(cursor.fetchall())
+        f"date_timestamp < '{date_start_timestamp}' "
+        f"AND "
+        f"done = '0'")
     connection.commit()
     pass
 
@@ -345,7 +346,6 @@ def save_recurrent(task_type, creation_date, active, done, text, top_distance, d
         f"INSERT INTO RecurrentTasks VALUES(NULL, '{task_type}', '{date_timestamp}', '{active}','{done}',"
         f" '{text}', '{top_distance}', '{duration}', '{period}', '{unit_str}', '{color}', '{font_color}')")
     connection.commit()
-
 
 
 def get_recurrent_entry(task_id):

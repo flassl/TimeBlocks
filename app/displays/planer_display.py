@@ -191,7 +191,6 @@ class PlanerDisplay(MDFloatLayout):
             self.dialog = EventDialog(None)
 
     def show_task_list(self):
-        load_tasks_to_list(0)
         navigation_drawer = MDApp.get_running_app().root.ids.navigation_drawer
         navigation_drawer_content = MDApp.get_running_app().root.ids.navigation_drawer_content
         deactivate_passed_tasks()

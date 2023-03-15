@@ -57,7 +57,7 @@ class Task(MDCard):
     active_planer_day = None
 
     def on_touch_down(self, touch):
-        if self.collide_point(*touch.pos):
+        if self.collide_point(*touch.pos) and not self.timer:
             self.timer = Clock.schedule_once(self.on_long_press, 0.3)
         self.current_touch_position = touch.pos
         return super().on_touch_down(touch)
@@ -67,6 +67,7 @@ class Task(MDCard):
 
         if self.timer:
             self.timer.cancel()
+            self.timer = None
         if self.movement_tick:
             self.movement_tick.cancel()
 
@@ -147,6 +148,7 @@ class Task(MDCard):
         self.dragging = False
         if self.scroll_handler:
             self.scroll_handler.cancel()
+            self.scroll_handler = None
         return super().on_touch_up(touch)
 
     def on_touch_move(self, touch, *args):
@@ -220,10 +222,10 @@ class Task(MDCard):
         recreate_in_root()
         show_positioning_hint()
         if self.options_showing:
-            print("options showing")
             self.hide_options(0)
 
-        self.scroll_handler = Clock.schedule_interval(self.handle_scroll, 0.03)
+        if not self.scroll_handler:
+            self.scroll_handler = Clock.schedule_interval(self.handle_scroll, 0.03)
 
     def handle_scroll(self, dt):
         if not self.active_planer_day:
@@ -374,11 +376,9 @@ class Task(MDCard):
 
         if self.task_type == 0:
             task = get_task(self.task_id, self.task_type)
-            print(task)
             dialog = TaskPopup(self.task_id, [task[5], task[6]])
         if self.task_type == 1:
             task = get_task(self.task_id, self.task_type)
-            print(self.task_id, self.task_type, task)
             dialog = RecurrentDialog(self.task_id, [task[5], task[8], task[9], task[6]])
         if self.task_type == 2:
             dialog = EventDialog(self)
