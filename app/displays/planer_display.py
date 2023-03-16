@@ -68,6 +68,7 @@ class PlanerDisplay(MDFloatLayout):
         planer_tasks_db = cursor.fetchall()
         connection.commit()
         self.active_planer_day.ids.planer_float_layout.clear_widgets()
+        self.create_time_wall(False)
 
         def add_to_planer_from_table(table_name):
             cursor.execute(f"SELECT * FROM {table_name} WHERE task_reference = '{row[2]}'")
@@ -98,18 +99,18 @@ class PlanerDisplay(MDFloatLayout):
 
     def show_and_scroll_to_time_wall(self, dt):
         if self.displayed_date == date.today():
-            self.create_time_wall()
+            self.create_time_wall(True)
             #Clock.schedule_once(self.smooth_scroll_to_time, 0.8)
             self.smooth_scroll_to_time(0)
 
-    def create_time_wall(self):
+    def create_time_wall(self, withScroll):
         if self.displayed_date == date.today():
             if self.time_wall and self.time_wall.parent:
                 self.time_wall.parent.remove_widget(self.time_wall)
             self.time_wall = TimeWall()
             self.active_planer_day.ids.planer_float_layout.add_widget(self.time_wall)
             self.time_wall.pos[1] = dp(3000)
-            self.update_time_wall(0)
+            self.update_time_wall(0, withScroll)
 
     def redo_time_wall(self):
         if self.time_wall and self.time_wall.parent:
@@ -126,12 +127,15 @@ class PlanerDisplay(MDFloatLayout):
         scroll_animation = Animation(scroll_y=day_progress, duration=3, transition="out_circ")
         scroll_animation.start(self.active_planer_day)
 
-    def update_time_wall(self, dt):
+    def update_time_wall(self, dt, withScroll):
         if self.time_wall:
             current_time = datetime.now()
-            #self.time_wall.pos[1] = calculate_true_top_from_time(current_time)
-            animation = Animation(y=calculate_true_top_from_time(current_time), duration=3, transition="out_circ")
-            animation.start(self.time_wall)
+            if withScroll:
+                #self.time_wall.pos[1] = calculate_true_top_from_time(current_time)
+                animation = Animation(y=calculate_true_top_from_time(current_time), duration=3, transition="out_circ")
+                animation.start(self.time_wall)
+            else:
+                self.time_wall.top = calculate_true_top_from_time(current_time)
 
     def update_screen_values(self, current_screen):
         self.active_planer_screen_name = current_screen.name

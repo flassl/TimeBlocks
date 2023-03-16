@@ -314,7 +314,7 @@ def set_due_recurrent_tasks_to_undone():
         period = int(task_data[8])
         unit_str = task_data[9]
         if unit_str == "Hours":
-            millis = period * 1000
+            millis = period * 1000 * 60 * 60
         if unit_str == "Days":
             millis = period * 1000 * 60 * 60 * 24
         if unit_str == "Weeks":
@@ -332,6 +332,15 @@ def set_due_recurrent_tasks_to_undone():
                     un_redo_recurrent(task_data[0], 0, 0)
                     remove_planer(task_data[0], 1)
 
+    date_start_timestamp = datetime.combine(date.today(), time(0, 0, 0)).timestamp()
+    cursor.execute(
+            f"UPDATE RecurrentTasks "
+            f"SET "
+            f"active = '0' "
+            f"WHERE "
+            f"date_timestamp < '{date_start_timestamp}' "
+            f"AND "
+            f"done = '0'")
 
 def get_all_due_recurrent_tasks():
     set_due_recurrent_tasks_to_undone()
@@ -413,6 +422,7 @@ def un_redo_recurrent(ID, done, active):
         f"task_reference = '{ID}'")
     connection.commit()
 
+
 def get_list_from_task_type(task_type):
     if task_type == 0:
         return "ToDoTasks"
@@ -484,7 +494,6 @@ def get_list_from_task_type(task_type):
 #                recurrent_task_list.append(new_task)
 #                recurrent.ids.recurrent_list_display.add_widget(new_task)
 
-
 def remove_recurrent(ID):
     cursor.execute(
         f"DELETE FROM RecurrentTasks "
@@ -525,6 +534,7 @@ def check_event(id, done):
         f"task_reference = '{id}'")
     connection.commit()
 
+
 def update_event_top(task_id, new_top):
     cursor.execute(
         f"UPDATE EventTasks "
@@ -533,6 +543,7 @@ def update_event_top(task_id, new_top):
         f"WHERE "
         f"task_reference = '{task_id}'")
     connection.commit()
+
 
 def get_task_amount_for_date(date):
     date_start_timestamp = datetime.combine(date, time(0, 0, 0)).timestamp()
