@@ -17,7 +17,7 @@ class PlanerDisplay(MDFloatLayout):
         Clock.schedule_once(self._add_labels, 0.1)
         Clock.schedule_once(partial(self.show_tasks, date.today()), 3)
         Clock.schedule_once(self.show_and_scroll_to_time_wall, 3)
-        Clock.schedule_interval(self.update_time_wall, 60)
+        Clock.schedule_interval(partial(self.update_time_wall, False), 60)
 
     def on_load(self):
         pass
