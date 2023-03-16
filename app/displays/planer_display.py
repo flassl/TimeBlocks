@@ -68,7 +68,6 @@ class PlanerDisplay(MDFloatLayout):
         planer_tasks_db = cursor.fetchall()
         connection.commit()
         self.active_planer_day.ids.planer_float_layout.clear_widgets()
-        self.create_time_wall(False)
 
         def add_to_planer_from_table(table_name):
             cursor.execute(f"SELECT * FROM {table_name} WHERE task_reference = '{row[2]}'")
@@ -96,6 +95,9 @@ class PlanerDisplay(MDFloatLayout):
                 add_to_planer_from_table("RecurrentTasks")
             if row[1] == 2:
                 add_to_planer_from_table("EventTasks")
+
+
+        self.create_time_wall(False)
 
     def show_and_scroll_to_time_wall(self, dt):
         if self.displayed_date == date.today():
